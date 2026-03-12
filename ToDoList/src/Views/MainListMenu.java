@@ -1,6 +1,7 @@
 package Views;
 
 import Controllers.ListController;
+import Data.ListRepository;
 import Models.TaskList;
 import Observers.ListObserver;
 import Views.AppDimensions;
@@ -18,14 +19,13 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
 
     private final MainFrame mainFrame;
     private final ListController listController = new ListController();
-    private final ArrayList<TaskList> taskLists;
+    private final List<TaskList> taskLists = ListRepository.getInstance().getAllLists();
 
     private JPanel listPanel, listComponentPanel;
 
-    public MainListMenu(ArrayList<TaskList> taskLists, MainFrame mainFrame){
+    public MainListMenu(MainFrame mainFrame){
 
         this.mainFrame = mainFrame;
-        this.taskLists = taskLists;
 
         listController.addListObserver(this);
 
@@ -85,7 +85,7 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
 
     public void removeList(TaskList list)
     {
-        int choice = JOptionPane.showConfirmDialog(new Button("Ok"), "Are you sure you want to delete " + list.getListName() + "?", "Delete Task List", JOptionPane.YES_NO_OPTION);
+        int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + list.getListName() + "?", "Delete Task List", JOptionPane.YES_NO_OPTION);
 
         if (choice == JOptionPane.YES_OPTION) {
             listController.deleteList(this.taskLists, list);
@@ -108,9 +108,9 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
         listComponentPanel.repaint();
     }
 
-    public void goToTaskMenu(TaskList list)
+    public void goToTaskMenu()
     {
-        mainFrame.showTaskMenu(list);
+        mainFrame.showTaskMenu();
     }
 
 }

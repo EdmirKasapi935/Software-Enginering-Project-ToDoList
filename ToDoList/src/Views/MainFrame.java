@@ -20,20 +20,25 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        showMainListMenu(taskLists);
+        showMainListMenu();
 
         this.setVisible(true);
 
     }
 
-    public void showMainListMenu(ArrayList<TaskList> taskLists)
+    public void showMainListMenu()
     {
-        switchWindow(new MainListMenu(taskLists, this));
+        switchWindow(new MainListMenu(this));
     }
 
-    public void showTaskMenu(TaskList list)
+    public void showTaskMenu()
     {
-        switchWindow(new TaskMenu( taskLists, list, this));
+        switchWindow(new TaskMenu(this));
+    }
+
+    public void showAddTaskForm()
+    {
+        switchWindow(new AddTaskForm(this));
     }
 
     private void switchWindow(JFrame frame)

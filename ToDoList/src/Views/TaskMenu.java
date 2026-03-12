@@ -1,6 +1,8 @@
 package Views;
 
 import Controllers.ListController;
+import Data.AppContext;
+import Models.Task;
 import Models.TaskList;
 import Observers.ListNameObserver;
 
@@ -9,28 +11,27 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TaskMenu extends JFrame implements ActionListener, ListNameObserver {
 
     private final ListController listController = new ListController();
 
     private final MainFrame mainFrame;
-    private final ArrayList<TaskList> taskLists;
-    private TaskList currentList;
+    private TaskList currentList = AppContext.getInstance().getCurrentList();
     private JLabel pageTitle;
     private JPanel taskPanel, taskComponentPanel;
 
-    public TaskMenu(ArrayList<TaskList> taskLists, TaskList list, MainFrame frame)
+    public TaskMenu( MainFrame frame)
     {
         listController.addNameObserver(this);
 
         this.mainFrame = frame;
-        this.currentList = list;
-        this.taskLists = taskLists;
 
         setLayout(null);
 
         addGuiComponents();
+        populateTaskPanel(currentList);
     }
 
     private void addGuiComponents()
@@ -82,14 +83,29 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
         String command = e.getActionCommand();
         if (command.equalsIgnoreCase("Main Menu"))
         {
-            mainFrame.showMainListMenu(taskLists);
+            AppContext.getInstance().setCurrentList(null);
+            mainFrame.showMainListMenu();
         } else if (command.equalsIgnoreCase("Edit Name")) {
-            String newListName = JOptionPane.showInputDialog("Enter the name of the new List");
+            String newListName = JOptionPane.showInputDialog("Enter the new name for this list.");
 
             if (newListName != null && !newListName.isEmpty()) {
                 listController.changeListName(currentList, newListName);
             }
+        } else if (command.equalsIgnoreCase("Add Task")) {
+            mainFrame.showAddTaskForm();
         }
+    }
+
+    private void populateTaskPanel(TaskList list) {
+
+        ArrayList<Task> tasks = list.getTasks();
+
+        for (Task task: tasks) {
+            taskComponentPanel.add(new TaskComponent(this, task));
+        }
+
+        taskComponentPanel.revalidate();
+        taskComponentPanel.repaint();
     }
 
     @Override

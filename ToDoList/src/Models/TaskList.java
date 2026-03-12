@@ -6,7 +6,7 @@ public class TaskList {
 
     private String listName;
 
-    private ArrayList tasks;
+    private ArrayList<Task> tasks;
 
     public TaskList(String listName)
     {
@@ -21,9 +21,18 @@ public class TaskList {
     public String getListName() {
         return listName;
     }
-
     public ArrayList getTasks() {
         return tasks;
+    }
+
+    public void addTask(Task task)
+    {
+        this.tasks.add(task);
+    }
+
+    public void removeTask(Task task)
+    {
+        this.tasks.remove(task);
     }
 
 }

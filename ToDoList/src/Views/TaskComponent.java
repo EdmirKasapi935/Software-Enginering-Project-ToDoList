@@ -1,3 +1,7 @@
+package Views;
+
+import Models.Status;
+import Models.Task;
 import Views.AppDimensions;
 
 import javax.swing.*;
@@ -7,21 +11,23 @@ import java.awt.event.ActionListener;
 
 public class TaskComponent extends JPanel implements ActionListener {
     private JCheckBox checkbox;
-
     private JTextPane taskField;
     private JButton deleteButton;
+    private TaskMenu parentWindow;
+    private Task task;
 
-    private JPanel parentPanel;
-
-    public TaskComponent(JPanel parentPanel)
+    public TaskComponent(TaskMenu parentWindow, Task task)
     {
-        this.parentPanel = parentPanel;
+        this.parentWindow = parentWindow;
+        this.task = task;
 
         setBackground(new Color(80, 187, 142));
 
         taskField = new JTextPane();
+        taskField.setEditable(false);
         taskField.setPreferredSize(AppDimensions.TASKFIELD_SIZE);
         taskField.setContentType("text/html");
+        taskField.setText("<html><h4>" + task.getTaskText() + "</h4></html>");
 
         checkbox = new JCheckBox();
         checkbox.setPreferredSize(AppDimensions.CHECKBOX_SIZE);
@@ -49,18 +55,21 @@ public class TaskComponent extends JPanel implements ActionListener {
             String taskText = taskField.getText().replaceAll("<[^>]*>", "");
 
             taskField.setText("<html><s>" + taskText + "</s></html>");
+            task.setStatus(Status.DONE);
+
 
         } else if (!checkbox.isSelected()) {
 
             String taskText = taskField.getText().replaceAll("<[^>]*>", "");
 
             taskField.setText(taskText);
+            task.setStatus(Status.UNDONE);
         }
 
         if(e.getActionCommand().equalsIgnoreCase("X")){
-            parentPanel.remove(this);
-            parentPanel.repaint();
-            parentPanel.revalidate();
+            //parentPanel.remove(this);
+            //parentPanel.repaint();
+            //parentPanel.revalidate();
         }
 
     }

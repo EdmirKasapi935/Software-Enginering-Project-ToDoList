@@ -1,5 +1,6 @@
 package Views;
 
+import Data.AppContext;
 import Models.TaskList;
 import Views.AppDimensions;
 
@@ -40,7 +41,8 @@ public class ListComponent extends JPanel implements ActionListener {
         if (command.equalsIgnoreCase("X")){
             parentWindow.removeList(this.taskList);
         } else if (command.equalsIgnoreCase(this.taskList.getListName())) {
-            parentWindow.goToTaskMenu(this.taskList);
+            AppContext.getInstance().setCurrentList(this.taskList);
+            parentWindow.goToTaskMenu();
         }
     }
 }
