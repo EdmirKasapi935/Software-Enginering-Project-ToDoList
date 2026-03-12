@@ -1,10 +1,15 @@
 package Views;
 
+import Models.TaskList;
 import Views.AppDimensions;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainFrame extends JFrame {
+
+    ArrayList<TaskList> taskLists = new ArrayList<>();
 
     public MainFrame()
     {
@@ -15,14 +20,20 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        showMainListMenu();
+        showMainListMenu(taskLists);
+
         this.setVisible(true);
 
     }
 
-    public void showMainListMenu()
+    public void showMainListMenu(ArrayList<TaskList> taskLists)
     {
-        switchWindow(new MainListMenu(this));
+        switchWindow(new MainListMenu(taskLists, this));
+    }
+
+    public void showTaskMenu(TaskList list)
+    {
+        switchWindow(new TaskMenu( taskLists, list, this));
     }
 
     private void switchWindow(JFrame frame)

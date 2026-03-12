@@ -14,6 +14,10 @@ public class TaskList {
         tasks = new ArrayList<>();
     }
 
+    public void setListName(String listName) {
+        this.listName = listName;
+    }
+
     public String getListName() {
         return listName;
     }

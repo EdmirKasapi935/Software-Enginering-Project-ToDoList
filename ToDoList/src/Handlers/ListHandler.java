@@ -23,4 +23,10 @@ public class ListHandler {
         return taskLists;
     }
 
+    public TaskList processNameChange(TaskList taskList, String newName) throws EmptyInputException, ListNameLengthExceededException
+    {
+        taskList.setListName(validator.validateListNameLength(validator.validateNotNull(newName, "Cannot change list's name into an empty one!")));
+        return  taskList;
+    }
+
 }

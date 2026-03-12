@@ -24,6 +24,7 @@ public class ListComponent extends JPanel implements ActionListener {
         deleteButton.setBackground(Color.RED);
         deleteButton.setPreferredSize(AppDimensions.DELETE_BUTTON_SIZE);
         deleteButton.addActionListener(this);
+        listButton.addActionListener(this);
 
         this.parentWindow = parentWindow;
         this.taskList = taskList;
@@ -38,6 +39,8 @@ public class ListComponent extends JPanel implements ActionListener {
         String command = e.getActionCommand();
         if (command.equalsIgnoreCase("X")){
             parentWindow.removeList(this.taskList);
+        } else if (command.equalsIgnoreCase(this.taskList.getListName())) {
+            parentWindow.goToTaskMenu(this.taskList);
         }
     }
 }

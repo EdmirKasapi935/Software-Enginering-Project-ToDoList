@@ -16,17 +16,21 @@ import java.util.List;
 
 public class MainListMenu extends JFrame implements ActionListener, ListObserver {
 
+    private final MainFrame mainFrame;
     private final ListController listController = new ListController();
-    private final ArrayList<TaskList> taskLists = new ArrayList<TaskList>();
+    private final ArrayList<TaskList> taskLists;
 
-    private JPanel listPanel, listComponentPanel ;
+    private JPanel listPanel, listComponentPanel;
 
-    public MainListMenu(MainFrame mainFrame){
+    public MainListMenu(ArrayList<TaskList> taskLists, MainFrame mainFrame){
+
+        this.mainFrame = mainFrame;
+        this.taskLists = taskLists;
 
         listController.addListObserver(this);
 
-        pack();
         setLayout(null);
+
 
         addGuiComponents();
         refreshListPanel(taskLists);
@@ -47,6 +51,7 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
 
         listComponentPanel = new JPanel();
         listComponentPanel.setLayout((new BoxLayout(listComponentPanel, BoxLayout.Y_AXIS)));
+        listComponentPanel.add(Box.createVerticalGlue());
         listPanel.add(listComponentPanel);
 
         JScrollPane scrollPane = new JScrollPane(listPanel);
@@ -80,7 +85,7 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
 
     public void removeList(TaskList list)
     {
-        int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete " + list.getListName() + "?", "Delete Task List", JOptionPane.YES_NO_OPTION);
+        int choice = JOptionPane.showConfirmDialog(new Button("Ok"), "Are you sure you want to delete " + list.getListName() + "?", "Delete Task List", JOptionPane.YES_NO_OPTION);
 
         if (choice == JOptionPane.YES_OPTION) {
             listController.deleteList(this.taskLists, list);
@@ -99,8 +104,13 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
             listComponentPanel.add(new ListComponent(this, list.getListName(), list));
         }
 
-        listComponentPanel.repaint();
         listComponentPanel.revalidate();
+        listComponentPanel.repaint();
+    }
+
+    public void goToTaskMenu(TaskList list)
+    {
+        mainFrame.showTaskMenu(list);
     }
 
 }
