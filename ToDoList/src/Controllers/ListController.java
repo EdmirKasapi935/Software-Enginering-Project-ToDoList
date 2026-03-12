@@ -1,6 +1,7 @@
 package Controllers;
 
-import CustomExcptions.EmptyInputException;
+import CustomExceptions.EmptyInputException;
+import CustomExceptions.ListNameLengthExceededException;
 import Handlers.ListHandler;
 import Models.TaskList;
 import Observers.ListObserver;
@@ -30,7 +31,7 @@ public class ListController {
     {
         try {
             notifyListObservers(listHandler.processCreateList(lists, listName));
-        }catch (EmptyInputException e){
+        }catch (EmptyInputException | ListNameLengthExceededException e){
             JOptionPane.showMessageDialog(new Button("OK"), e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 

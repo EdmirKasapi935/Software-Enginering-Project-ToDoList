@@ -1,4 +1,4 @@
-package CustomExcptions;
+package CustomExceptions;
 
 public class EmptyInputException extends Exception{
 

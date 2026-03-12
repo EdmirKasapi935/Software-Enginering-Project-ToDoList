@@ -1,19 +1,18 @@
 package Handlers;
 
-import CustomExcptions.EmptyInputException;
+import CustomExceptions.EmptyInputException;
+import CustomExceptions.ListNameLengthExceededException;
 import Models.TaskList;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.List;
 
 public class ListHandler {
 
     private final Validator validator = new Validator();
 
-    public List<TaskList> processCreateList(List<TaskList> taskLists, String listName) throws EmptyInputException {
+    public List<TaskList> processCreateList(List<TaskList> taskLists, String listName) throws EmptyInputException, ListNameLengthExceededException {
 
-        TaskList newList = new TaskList(validator.validateNotNull(listName, "Name of a list cannot be empty!"));
+        TaskList newList = new TaskList(validator.validateListNameLength(validator.validateNotNull(listName, "Name of a list cannot be empty!")));
         taskLists.add(newList);
         return taskLists;
 

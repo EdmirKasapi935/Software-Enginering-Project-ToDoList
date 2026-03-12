@@ -1,6 +1,7 @@
 package Handlers;
 
-import CustomExcptions.EmptyInputException;
+import CustomExceptions.EmptyInputException;
+import CustomExceptions.ListNameLengthExceededException;
 
 public class Validator {
 
@@ -12,6 +13,16 @@ public class Validator {
         }
 
         return input;
+    }
+
+    public String validateListNameLength(String listName) throws ListNameLengthExceededException
+    {
+        if (listName.length() > 40)
+        {
+            throw new ListNameLengthExceededException("Name of a list cannot exceed 40 characters!");
+        }
+
+        return listName;
     }
 
 }
