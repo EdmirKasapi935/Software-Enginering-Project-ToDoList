@@ -2,6 +2,7 @@ package Controllers;
 
 import CustomExceptions.EmptyInputException;
 import CustomExceptions.ListNameLengthExceededException;
+import CustomExceptions.ListNameUnavailableException;
 import Handlers.ListHandler;
 import Models.TaskList;
 import Observers.ListNameObserver;
@@ -43,7 +44,7 @@ public class ListController {
     {
         try {
             notifyListObservers(listHandler.processCreateList(lists, listName));
-        }catch (EmptyInputException | ListNameLengthExceededException e){
+        }catch (EmptyInputException | ListNameLengthExceededException | ListNameUnavailableException e){
             JOptionPane.showMessageDialog(new Button("OK"), e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -54,11 +55,11 @@ public class ListController {
         notifyListObservers(listHandler.processDeleteList(lists, taskList));
     }
 
-    public void changeListName(TaskList taskList, String newName)
+    public void changeListName(List<TaskList> taskLists, TaskList taskList, String newName)
     {
         try {
-            notifyNameObservers(listHandler.processNameChange(taskList, newName));
-        }catch (EmptyInputException | ListNameLengthExceededException e)
+            notifyNameObservers(listHandler.processNameChange(taskLists, taskList, newName));
+        }catch (EmptyInputException | ListNameLengthExceededException | ListNameUnavailableException e)
         {
             JOptionPane.showMessageDialog(new Button("OK"), e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

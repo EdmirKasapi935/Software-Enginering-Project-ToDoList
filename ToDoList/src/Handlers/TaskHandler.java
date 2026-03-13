@@ -1,18 +1,19 @@
 package Handlers;
 
-import CustomExceptions.EmptyInputException;
-import CustomExceptions.TaskTextLengthExceededException;
+import CustomExceptions.TaskValidationException;
 import Models.*;
 
 import java.util.Date;
+import java.util.List;
 
 public class TaskHandler {
 
     private static final Validator validator = new Validator();
 
-    public void processCreateTask(TaskList list, String taskTitle, Category taskCategory, Priority taskPriority, Date dueDate) throws EmptyInputException, TaskTextLengthExceededException
+    public void processCreateTask(TaskList list, String taskTitle, Category taskCategory, Priority taskPriority, Date dueDate) throws TaskValidationException
     {
-        Task newTask = new Task(validator.validateTaskTextLength( validator.validateNotNull(taskTitle, "Task title cannot be empty!")), taskPriority, taskCategory, dueDate, Status.UNDONE);
+        List<Object> taskData = validator.validateTaskCreation(taskTitle, taskCategory, taskPriority, dueDate);
+        Task newTask = new Task((String) taskData.get(0), (Priority) taskData.get(1), (Category) taskData.get(2), (Date) taskData.get(3));
         list.addTask(newTask);
     }
 
@@ -22,14 +23,14 @@ public class TaskHandler {
         return list;
     }
 
-    public void processEditTask(Task task, String taskName, Category taskCategory, Priority taskPriority, Date dueDate) throws EmptyInputException, TaskTextLengthExceededException
+    public void processEditTask(Task task, String taskTitle, Category taskCategory, Priority taskPriority, Date dueDate) throws TaskValidationException
     {
-        String validatedName = validator.validateTaskTextLength(validator.validateNotNull(taskName, "Task title cannot be empty"));
+        List<Object> taskData = validator.validateTaskEditing(task, taskTitle, taskCategory, taskPriority, dueDate);
 
-        task.setTaskText(validatedName);
-        task.setTaskCategory(taskCategory);
-        task.setTaskPriority(taskPriority);
-        task.setDueDate(dueDate);
+        task.setTaskText((String) taskData.get(0));
+        task.setTaskPriority((Priority) taskData.get(1));
+        task.setTaskCategory((Category) taskData.get(2));
+        task.setDueDate((Date) taskData.get(3));
     }
 
 }

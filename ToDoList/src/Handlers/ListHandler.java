@@ -2,6 +2,7 @@ package Handlers;
 
 import CustomExceptions.EmptyInputException;
 import CustomExceptions.ListNameLengthExceededException;
+import CustomExceptions.ListNameUnavailableException;
 import Models.TaskList;
 
 import java.util.List;
@@ -10,9 +11,9 @@ public class ListHandler {
 
     private final Validator validator = new Validator();
 
-    public List<TaskList> processCreateList(List<TaskList> taskLists, String listName) throws EmptyInputException, ListNameLengthExceededException {
+    public List<TaskList> processCreateList(List<TaskList> taskLists, String listName) throws EmptyInputException, ListNameLengthExceededException, ListNameUnavailableException {
 
-        TaskList newList = new TaskList(validator.validateListNameLength(validator.validateNotNull(listName, "Name of a list cannot be empty!")));
+        TaskList newList = new TaskList(validator.validateListNameAvailability( taskLists, validator.validateListNameLength(validator.validateNotNull(listName, "Name of a list cannot be empty!"))));
         taskLists.add(newList);
         return taskLists;
 
@@ -23,9 +24,9 @@ public class ListHandler {
         return taskLists;
     }
 
-    public TaskList processNameChange(TaskList taskList, String newName) throws EmptyInputException, ListNameLengthExceededException
+    public TaskList processNameChange(List<TaskList> taskLists, TaskList taskList, String newName) throws EmptyInputException, ListNameLengthExceededException, ListNameUnavailableException
     {
-        taskList.setListName(validator.validateListNameLength(validator.validateNotNull(newName, "Cannot change list's name into an empty one!")));
+        taskList.setListName(validator.validateListNameAvailability(taskLists, validator.validateListNameLength(validator.validateNotNull(newName, "Cannot change list's name into an empty one!"))));
         return  taskList;
     }
 

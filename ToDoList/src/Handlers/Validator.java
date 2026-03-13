@@ -2,13 +2,130 @@ package Handlers;
 
 import CustomExceptions.EmptyInputException;
 import CustomExceptions.ListNameLengthExceededException;
-import CustomExceptions.TaskTextLengthExceededException;
+import CustomExceptions.ListNameUnavailableException;
+import CustomExceptions.TaskValidationException;
+import Models.Category;
+import Models.Priority;
+import Models.Task;
+import Models.TaskList;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class Validator {
 
+    public List<Object> validateTaskCreation(String taskText, Category category, Priority priority, Date dueDate) throws TaskValidationException {
+        List<Object> taskData = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
+
+        if (taskText.trim().equalsIgnoreCase("") || taskText.isBlank())
+        {
+            errors.add("Task's title cannot be empty.");
+        } else if (taskText.length() > 35) {
+            errors.add("Task's title cannot exceed 35 characters.");
+        }
+        else
+        {
+            taskData.add(taskText);
+        }
+
+        if(priority == null)
+        {
+            errors.add("Please select a priority level.");
+        }
+        else
+        {
+            taskData.add(priority);
+        }
+
+        if(category == null)
+        {
+            errors.add("Please select a task category.");
+        }
+        else
+        {
+            taskData.add(category);
+        }
+
+        if (dueDate == null)
+        {
+            errors.add("Please enter a due date.");
+        }
+        else if (dueDate.before(todayWithoutTime())) {
+            errors.add("Due date cannot be before today.");
+        }
+        else
+        {
+            taskData.add(dueDate);
+        }
+
+        if (!errors.isEmpty())
+        {
+            throw new TaskValidationException(String.join("\n", errors));
+        }
+
+        return taskData;
+    }
+
+    public List<Object> validateTaskEditing(Task task,String taskText, Category category, Priority priority, Date dueDate) throws TaskValidationException
+    {
+        List<Object> taskData = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
+
+        if (taskText.trim().equalsIgnoreCase("") || taskText.isBlank())
+        {
+            errors.add("Task's title cannot be empty.");
+        } else if (taskText.length() > 35) {
+            errors.add("Task's title cannot exceed 35 characters.");
+        }
+        else
+        {
+            taskData.add(taskText);
+        }
+
+        if(priority == null)
+        {
+            errors.add("Please select a priority level.");
+        }
+        else
+        {
+            taskData.add(priority);
+        }
+
+        if(category == null)
+        {
+            errors.add("Please select a task category.");
+        }
+        else
+        {
+            taskData.add(category);
+        }
+
+        if (dueDate == null)
+        {
+            errors.add("Please enter a due date.");
+        }
+        else if (!dueDate.equals(task.getDueDate()) &&  dueDate.before(todayWithoutTime())) {
+            errors.add("Due date cannot be before today.");
+        }
+        else
+        {
+            taskData.add(dueDate);
+        }
+
+        if (!errors.isEmpty())
+        {
+            throw new TaskValidationException(String.join("\n", errors));
+        }
+
+        return taskData;
+    }
+
     public String validateNotNull(String input, String message) throws EmptyInputException
     {
-        if(input.trim().equals(""))
+        if(input.trim().equals("") || input.isBlank())
         {
             throw new EmptyInputException(message);
         }
@@ -26,14 +143,23 @@ public class Validator {
         return listName;
     }
 
-    public String validateTaskTextLength(String taskText) throws TaskTextLengthExceededException
+    public String validateListNameAvailability(List<TaskList> lists, String listName) throws ListNameUnavailableException
     {
-        if (taskText.length() > 35)
+        if (lists.stream().anyMatch(n -> n.getListName().equals( listName)))
         {
-            throw new TaskTextLengthExceededException("Task's title cannot exceed 35 characters");
+            throw new ListNameUnavailableException("A list with this name already exists!");
         }
 
-        return taskText;
+        return listName;
+    }
+
+    private Date todayWithoutTime() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
     }
 
 }

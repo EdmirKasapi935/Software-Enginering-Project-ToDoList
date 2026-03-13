@@ -1,7 +1,6 @@
 package Controllers;
 
-import CustomExceptions.EmptyInputException;
-import CustomExceptions.TaskTextLengthExceededException;
+import CustomExceptions.TaskValidationException;
 import Handlers.TaskHandler;
 import Models.Category;
 import Models.Priority;
@@ -34,7 +33,7 @@ public class TaskController {
         try {
             taskHandler.processCreateTask(list, taskName, taskCategory, taskPriority, dueDate);
             JOptionPane.showMessageDialog(null,"Task added successfully!", "Task Added", JOptionPane.INFORMATION_MESSAGE);
-        }catch (EmptyInputException | TaskTextLengthExceededException e)
+        }catch (TaskValidationException e)
         {
             JOptionPane.showMessageDialog(null,e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -50,7 +49,7 @@ public class TaskController {
         try {
             taskHandler.processEditTask(task, taskName, taskCategory, taskPriority, dueDate);
             JOptionPane.showMessageDialog(null,"Task edited successfully!", "Task Edited", JOptionPane.INFORMATION_MESSAGE);
-        }catch (EmptyInputException | TaskTextLengthExceededException e)
+        }catch (TaskValidationException e)
         {
             JOptionPane.showMessageDialog(null,e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

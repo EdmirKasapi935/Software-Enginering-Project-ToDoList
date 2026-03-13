@@ -3,6 +3,7 @@ package Views;
 import Controllers.ListController;
 import Controllers.TaskController;
 import Data.AppContext;
+import Data.ListRepository;
 import Models.Task;
 import Models.TaskList;
 import Observers.ListNameObserver;
@@ -105,7 +106,7 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
             String newListName = JOptionPane.showInputDialog("Enter the new name for this list.");
 
             if (newListName != null && !newListName.isEmpty()) {
-                listController.changeListName(currentList, newListName);
+                listController.changeListName(ListRepository.getInstance().getAllLists(), currentList, newListName);
             }
         } else if (command.equalsIgnoreCase("Add Task")) {
             mainFrame.showAddTaskForm();

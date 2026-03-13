@@ -77,7 +77,13 @@ public class AddTaskForm extends JFrame{
         );
 
         dueDateSpinner.setModel(dateModel);
-        dueDateSpinner.setEditor(new JSpinner.DateEditor(dueDateSpinner, "dd/MM/yyyy"));
+
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(dueDateSpinner, "dd/MM/yyyy");
+        dueDateSpinner.setEditor(editor);
+
+        editor.getTextField().setEditable(false);
+        JFormattedTextField textField = editor.getTextField();
+        textField.setFocusLostBehavior(JFormattedTextField.COMMIT_OR_REVERT);
     }
 
     private Date todayWithoutTime() {
