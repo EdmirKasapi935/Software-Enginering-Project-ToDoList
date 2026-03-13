@@ -64,7 +64,19 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void markAsDone()
+    {
+        if (this.status == Status.UNDONE)
+        {
+            this.status = Status.DONE;
+        }
+    }
+
+    public void markAsUndone()
+    {
+        if (this.status == Status.DONE)
+        {
+            this.status = Status.UNDONE;
+        }
     }
 }

@@ -1,10 +1,12 @@
 package Views;
 
 import Controllers.ListController;
+import Controllers.TaskController;
 import Data.AppContext;
 import Models.Task;
 import Models.TaskList;
 import Observers.ListNameObserver;
+import Observers.TaskPanelObserver;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +15,11 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskMenu extends JFrame implements ActionListener, ListNameObserver {
+public class TaskMenu extends JFrame implements ActionListener, ListNameObserver, TaskPanelObserver {
 
     private final ListController listController = new ListController();
+
+    private final TaskController taskController = new TaskController();
 
     private final MainFrame mainFrame;
     private TaskList currentList = AppContext.getInstance().getCurrentList();
@@ -25,6 +29,7 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
     public TaskMenu( MainFrame frame)
     {
         listController.addNameObserver(this);
+        taskController.addTaskPanelObserver(this);
 
         this.mainFrame = frame;
 
@@ -78,6 +83,17 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
         this.getContentPane().setBackground(new Color(78, 206, 225));
     }
 
+    public void removeTask(Task task)
+    {
+        taskController.deleteTask(currentList, task);
+    }
+
+    public void goToTaskEditForm(Task task)
+    {
+        AppContext.getInstance().setCurrentTask(task);
+        mainFrame.showEditTaskForm();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
@@ -98,6 +114,8 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
 
     private void populateTaskPanel(TaskList list) {
 
+        taskComponentPanel.removeAll();
+
         ArrayList<Task> tasks = list.getTasks();
 
         for (Task task: tasks) {
@@ -116,5 +134,10 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
                 AppDimensions.BANNER_SIZE.width,
                 AppDimensions.BANNER_SIZE.height
         );
+    }
+
+    @Override
+    public void onListStateChange(TaskList list) {
+        populateTaskPanel(list);
     }
 }

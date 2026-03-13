@@ -1,29 +1,59 @@
 package Controllers;
 
 import CustomExceptions.EmptyInputException;
+import CustomExceptions.TaskTextLengthExceededException;
 import Handlers.TaskHandler;
 import Models.Category;
 import Models.Priority;
 import Models.Task;
 import Models.TaskList;
+import Observers.TaskPanelObserver;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class TaskController {
 
     private static final TaskHandler taskHandler = new TaskHandler();
 
+    private final ArrayList<TaskPanelObserver> taskObservers = new ArrayList<>();
+
+    public void addTaskPanelObserver(TaskPanelObserver observer)
+    {
+        taskObservers.add(observer);
+    }
+
+    private void notifyTaskPanelObservers(TaskList list)
+    {
+        taskObservers.forEach(n -> n.onListStateChange(list));
+    }
+
     public void createTask(TaskList list, String taskName, Category taskCategory, Priority taskPriority, Date dueDate)
     {
         try {
             taskHandler.processCreateTask(list, taskName, taskCategory, taskPriority, dueDate);
             JOptionPane.showMessageDialog(null,"Task added successfully!", "Task Added", JOptionPane.INFORMATION_MESSAGE);
-        }catch (EmptyInputException e)
+        }catch (EmptyInputException | TaskTextLengthExceededException e)
         {
             JOptionPane.showMessageDialog(null,e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
 
+    public void deleteTask(TaskList list, Task task)
+    {
+        notifyTaskPanelObservers(taskHandler.processDeleteTask(list, task));
+    }
+
+    public void editTask(Task task, String taskName, Category taskCategory, Priority taskPriority, Date dueDate)
+    {
+        try {
+            taskHandler.processEditTask(task, taskName, taskCategory, taskPriority, dueDate);
+            JOptionPane.showMessageDialog(null,"Task edited successfully!", "Task Edited", JOptionPane.INFORMATION_MESSAGE);
+        }catch (EmptyInputException | TaskTextLengthExceededException e)
+        {
+            JOptionPane.showMessageDialog(null,e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 }

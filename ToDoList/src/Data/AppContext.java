@@ -1,5 +1,6 @@
 package Data;
 
+import Models.Task;
 import Models.TaskList;
 
 public class AppContext {
@@ -7,6 +8,7 @@ public class AppContext {
     private static AppContext instance;
 
     private TaskList currentList;
+    private Task currentTask;
 
     private AppContext() {}
 
@@ -23,7 +25,15 @@ public class AppContext {
         this.currentList = currentList;
     }
 
+    public void setCurrentTask(Task currentTask) {
+        this.currentTask = currentTask;
+    }
+
     public TaskList getCurrentList() {
         return currentList;
+    }
+
+    public Task getCurrentTask() {
+        return currentTask;
     }
 }

@@ -13,6 +13,7 @@ public class TaskComponent extends JPanel implements ActionListener {
     private JCheckBox checkbox;
     private JTextPane taskField;
     private JButton deleteButton;
+    private JButton editButton;
     private TaskMenu parentWindow;
     private Task task;
 
@@ -25,21 +26,25 @@ public class TaskComponent extends JPanel implements ActionListener {
 
         taskField = new JTextPane();
         taskField.setEditable(false);
-        taskField.setPreferredSize(AppDimensions.TASKFIELD_SIZE);
+        taskField.setPreferredSize(new Dimension( (int)(AppDimensions.TASKFIELD_SIZE.width * 0.85) , AppDimensions.TASKFIELD_SIZE.height));
         taskField.setContentType("text/html");
-        taskField.setText("<html><h4>" + task.getTaskText() + "</h4></html>");
+        renderTaskText(task.getTaskText());
 
-        checkbox = new JCheckBox();
-        checkbox.setPreferredSize(AppDimensions.CHECKBOX_SIZE);
-        checkbox.addActionListener(this);
+        activateCheckbox();
 
         deleteButton = new JButton("X");
         deleteButton.setPreferredSize(AppDimensions.DELETE_BUTTON_SIZE);
         deleteButton.addActionListener(this);
 
+        editButton = new JButton("...");
+        editButton.setPreferredSize(AppDimensions.DELETE_BUTTON_SIZE);
+        editButton.setBackground(Color.YELLOW);
+        editButton.addActionListener(this);
+
         add(checkbox);
         add(taskField);
         add(deleteButton);
+        add(editButton);
 
     }
 
@@ -47,29 +52,49 @@ public class TaskComponent extends JPanel implements ActionListener {
         return taskField;
     }
 
+    private void renderTaskText(String taskText)
+    {
+        if (task.getStatus() == Status.UNDONE)
+        {
+            taskField.setText("<html><h3 style='text-align:center'>" + taskText + "<h3></html>");
+        }else if (task.getStatus() == Status.DONE ){
+            taskField.setText("<html><h3 style='text-align:center'><s>" + taskText + "<s><h3></html>");
+        }
+
+
+    }
+
+    private void activateCheckbox()
+    {
+        checkbox = new JCheckBox();
+        checkbox.setPreferredSize(AppDimensions.CHECKBOX_SIZE);
+        checkbox.addActionListener(this);
+
+        if (task.getStatus() == Status.DONE)
+        {
+            checkbox.setSelected(true);
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(checkbox.isSelected()) {
 
-            String taskText = taskField.getText().replaceAll("<[^>]*>", "");
-
-            taskField.setText("<html><s>" + taskText + "</s></html>");
-            task.setStatus(Status.DONE);
-
+            task.markAsDone();
+            renderTaskText(task.getTaskText());
 
         } else if (!checkbox.isSelected()) {
 
-            String taskText = taskField.getText().replaceAll("<[^>]*>", "");
-
-            taskField.setText(taskText);
-            task.setStatus(Status.UNDONE);
+            task.markAsUndone();
+            renderTaskText(task.getTaskText());
         }
 
         if(e.getActionCommand().equalsIgnoreCase("X")){
-            //parentPanel.remove(this);
-            //parentPanel.repaint();
-            //parentPanel.revalidate();
+            parentWindow.removeTask(task);
+        }
+
+        if(e.getActionCommand().equalsIgnoreCase("...")){
+            parentWindow.goToTaskEditForm(task);
         }
 
     }

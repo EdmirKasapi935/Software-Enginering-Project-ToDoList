@@ -2,6 +2,7 @@ package Handlers;
 
 import CustomExceptions.EmptyInputException;
 import CustomExceptions.ListNameLengthExceededException;
+import CustomExceptions.TaskTextLengthExceededException;
 
 public class Validator {
 
@@ -23,6 +24,16 @@ public class Validator {
         }
 
         return listName;
+    }
+
+    public String validateTaskTextLength(String taskText) throws TaskTextLengthExceededException
+    {
+        if (taskText.length() > 35)
+        {
+            throw new TaskTextLengthExceededException("Task's title cannot exceed 35 characters");
+        }
+
+        return taskText;
     }
 
 }
