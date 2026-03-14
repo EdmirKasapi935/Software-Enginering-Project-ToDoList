@@ -4,6 +4,7 @@ import Controllers.ListController;
 import Controllers.TaskController;
 import Data.AppContext;
 import Data.ListRepository;
+import Models.SortCriterion;
 import Models.Task;
 import Models.TaskList;
 import Observers.ListNameObserver;
@@ -27,6 +28,8 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
     private JLabel pageTitle;
     private JPanel taskPanel, taskComponentPanel;
 
+    private JComboBox<SortCriterion> sortBox;
+
     public TaskMenu( MainFrame frame)
     {
         listController.addNameObserver(this);
@@ -37,7 +40,7 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
         setLayout(null);
 
         addGuiComponents();
-        populateTaskPanel(currentList);
+        populateTaskPanel(currentList, (SortCriterion) sortBox.getSelectedItem());
     }
 
     private void addGuiComponents()
@@ -77,11 +80,24 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
         editListNameButton.addActionListener(this);
         buttonPanel.add(editListNameButton);
 
+        JButton sortButton = new JButton("Sort");
+        sortButton.addActionListener(this);
+        buttonPanel.add(sortButton);
+
+
+        sortBox = new JComboBox<>();
+        sortBox.addItem(SortCriterion.NONE);
+        sortBox.addItem(SortCriterion.BY_PRIORITY);
+        sortBox.addItem(SortCriterion.BY_DUE_DATE);
+        sortBox.addItem(SortCriterion.BY_CATEGORY);
+        buttonPanel.add(sortBox);
 
         this.getContentPane().add(pageTitle);
         this.getContentPane().add(scrollPane);
         this.getContentPane().add(buttonPanel);
         this.getContentPane().setBackground(new Color(78, 206, 225));
+
+
     }
 
     public void removeTask(Task task)
@@ -110,14 +126,16 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
             }
         } else if (command.equalsIgnoreCase("Add Task")) {
             mainFrame.showAddTaskForm();
+        } else if (command.equalsIgnoreCase("Sort")) {
+           populateTaskPanel(currentList, (SortCriterion) sortBox.getSelectedItem());
         }
     }
 
-    private void populateTaskPanel(TaskList list) {
+    private void populateTaskPanel(TaskList list,SortCriterion criterion) {
 
         taskComponentPanel.removeAll();
 
-        ArrayList<Task> tasks = list.getTasks();
+        List<Task> tasks = list.getSortedList(criterion);
 
         for (Task task: tasks) {
             taskComponentPanel.add(new TaskComponent(this, task));
@@ -126,6 +144,7 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
         taskComponentPanel.revalidate();
         taskComponentPanel.repaint();
     }
+
 
     @Override
     public void onListNameChange(TaskList list) {
@@ -139,6 +158,6 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
 
     @Override
     public void onListStateChange(TaskList list) {
-        populateTaskPanel(list);
+        populateTaskPanel(list, (SortCriterion) sortBox.getSelectedItem());
     }
 }

@@ -1,5 +1,6 @@
 package Views;
 
+import Models.Priority;
 import Models.Status;
 import Models.Task;
 import Views.AppDimensions;
@@ -22,13 +23,13 @@ public class TaskComponent extends JPanel implements ActionListener {
         this.parentWindow = parentWindow;
         this.task = task;
 
-        setBackground(new Color(80, 187, 142));
+        renderBackgroundColor();
 
         taskField = new JTextPane();
         taskField.setEditable(false);
         taskField.setPreferredSize(new Dimension( (int)(AppDimensions.TASKFIELD_SIZE.width * 0.85) , AppDimensions.TASKFIELD_SIZE.height));
         taskField.setContentType("text/html");
-        renderTaskText(task.getTaskText());
+        renderTaskText(task);
 
         activateCheckbox();
 
@@ -52,15 +53,32 @@ public class TaskComponent extends JPanel implements ActionListener {
         return taskField;
     }
 
-    private void renderTaskText(String taskText)
+    private void renderTaskText(Task task)
     {
         if (task.getStatus() == Status.UNDONE)
         {
-            taskField.setText("<html><h3 style='text-align:center'>" + taskText + "<h3></html>");
+            taskField.setText("<html><h4 style='text-align:center'>" + task.getTaskText() + "<br>  Category: " + task.getTaskCategory() + " | Due: " + task.getDueDate().toString() + "<h3></html>");
         }else if (task.getStatus() == Status.DONE ){
-            taskField.setText("<html><h3 style='text-align:center'><s>" + taskText + "<s><h3></html>");
+            taskField.setText("<html><h4 style='text-align:center'><s>" + task.getTaskText() + "</s>" + "<br>  Category: " + task.getTaskCategory() + " | Due: " + task.getDueDate().toString() + "<h4></html>");
         }
 
+
+    }
+
+    private void renderBackgroundColor()
+    {
+        if (task.getTaskPriority() == Priority.LOW)
+        {
+            setBackground(Color.GRAY);
+        }
+        else if (task.getTaskPriority() == Priority.MEDIUM)
+        {
+            setBackground(Color.orange);
+        }
+        else if (task.getTaskPriority() == Priority.HIGH)
+        {
+            setBackground(new Color(255, 0, 55));
+        }
 
     }
 
@@ -81,12 +99,12 @@ public class TaskComponent extends JPanel implements ActionListener {
         if(checkbox.isSelected()) {
 
             task.markAsDone();
-            renderTaskText(task.getTaskText());
+            renderTaskText(task);
 
         } else if (!checkbox.isSelected()) {
 
             task.markAsUndone();
-            renderTaskText(task.getTaskText());
+            renderTaskText(task);
         }
 
         if(e.getActionCommand().equalsIgnoreCase("X")){
