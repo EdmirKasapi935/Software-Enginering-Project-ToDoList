@@ -1,5 +1,6 @@
 package Models;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Task {
@@ -7,10 +8,10 @@ public class Task {
     private String taskText;
     private Priority taskPriority;
     private Category taskCategory;
-    private Date dueDate;
+    private LocalDate dueDate;
     private Status status;
 
-    public Task(String taskText, Priority taskPriority, Category taskCategory, Date dueDate)
+    public Task(String taskText, Priority taskPriority, Category taskCategory, LocalDate dueDate)
     {
         this.taskText = taskText;
         this.taskPriority = taskPriority;
@@ -19,7 +20,7 @@ public class Task {
         this.status = Status.UNDONE;
     }
 
-    public Task(String taskText, Priority taskPriority, Category taskCategory, Date dueDate, Status status)
+    public Task(String taskText, Priority taskPriority, Category taskCategory, LocalDate dueDate, Status status)
     {
         this.taskText = taskText;
         this.taskPriority = taskPriority;
@@ -40,7 +41,7 @@ public class Task {
         return taskCategory;
     }
 
-    public Date getDueDate() {
+    public LocalDate getDueDate() {
         return dueDate;
     }
 
@@ -60,7 +61,7 @@ public class Task {
         this.taskCategory = taskCategory;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -78,5 +79,14 @@ public class Task {
         {
             this.status = Status.UNDONE;
         }
+    }
+
+    public boolean isOverdue() {
+        return status != Status.DONE && dueDate.isBefore(LocalDate.now());
+    }
+
+    public boolean isDueToday()
+    {
+        return status != Status.DONE && dueDate.equals(LocalDate.now());
     }
 }

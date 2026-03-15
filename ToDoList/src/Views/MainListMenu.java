@@ -60,13 +60,21 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.setBounds(-5,  AppDimensions.GUI_SIZE.height - 88,  AppDimensions.ADDTASKBUTTON_SIZE.width,  AppDimensions.ADDTASKBUTTON_SIZE.height);
+
         JButton addListButton = new JButton("Add List");
-        addListButton.setBounds(-5,  AppDimensions.GUI_SIZE.height - 88,  AppDimensions.ADDTASKBUTTON_SIZE.width,  AppDimensions.ADDTASKBUTTON_SIZE.height);
         addListButton.addActionListener(this);
+        buttonPanel.add(addListButton);
+
+        JButton reportFormButton = new JButton("View Report");
+        reportFormButton.addActionListener(this);
+        buttonPanel.add(reportFormButton);
 
         this.getContentPane().add(bannerLabel);
         this.getContentPane().add(scrollPane);
-        this.getContentPane().add(addListButton);
+        this.getContentPane().add(buttonPanel);
         this.getContentPane().setBackground(new Color(126, 132, 188));
     }
 
@@ -80,6 +88,8 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
             if (listName != null && !listName.isEmpty()) {
                 listController.createList(taskLists, listName);
             }
+        } else if (command.equalsIgnoreCase("View Report")) {
+            mainFrame.showReportForm();
         }
     }
 

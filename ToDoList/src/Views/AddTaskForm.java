@@ -8,6 +8,8 @@ import Models.Priority;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -47,7 +49,11 @@ public class AddTaskForm extends JFrame{
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                taskController.createTask(AppContext.getInstance().getCurrentList(), taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(),(Priority) priorityComboBox.getSelectedItem(), (Date) dueDateSpinner.getValue() );
+
+                Date dateresult = (Date) dueDateSpinner.getValue();
+                LocalDate localdateresult = dateresult.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+                taskController.createTask(AppContext.getInstance().getCurrentList(), taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(),(Priority) priorityComboBox.getSelectedItem(), localdateresult );
             }
         });
     }

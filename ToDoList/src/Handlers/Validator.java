@@ -9,6 +9,7 @@ import Models.Priority;
 import Models.Task;
 import Models.TaskList;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class Validator {
 
-    public List<Object> validateTaskCreation(String taskText, Category category, Priority priority, Date dueDate) throws TaskValidationException {
+    public List<Object> validateTaskCreation(String taskText, Category category, Priority priority, LocalDate dueDate) throws TaskValidationException {
         List<Object> taskData = new ArrayList<>();
         List<String> errors = new ArrayList<>();
 
@@ -53,7 +54,7 @@ public class Validator {
         {
             errors.add("Please enter a due date.");
         }
-        else if (dueDate.before(todayWithoutTime())) {
+        else if (dueDate.isBefore(LocalDate.now())) {
             errors.add("Due date cannot be before today.");
         }
         else
@@ -69,7 +70,7 @@ public class Validator {
         return taskData;
     }
 
-    public List<Object> validateTaskEditing(Task task,String taskText, Category category, Priority priority, Date dueDate) throws TaskValidationException
+    public List<Object> validateTaskEditing(Task task,String taskText, Category category, Priority priority, LocalDate dueDate) throws TaskValidationException
     {
         List<Object> taskData = new ArrayList<>();
         List<String> errors = new ArrayList<>();
@@ -107,7 +108,7 @@ public class Validator {
         {
             errors.add("Please enter a due date.");
         }
-        else if (!dueDate.equals(task.getDueDate()) &&  dueDate.before(todayWithoutTime())) {
+        else if (!dueDate.equals(task.getDueDate()) &&  dueDate.isBefore(LocalDate.now())) {
             errors.add("Due date cannot be before today.");
         }
         else

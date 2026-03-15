@@ -9,6 +9,10 @@ import Models.Task;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -20,9 +24,9 @@ public class EditTaskForm extends JFrame {
 
     private JPanel mainPanel;
     private JLabel taskTitleLabel;
-    private JComboBox categoryComboBox;
+    private JComboBox<Category> categoryComboBox;
     private JLabel categoryLabel;
-    private JComboBox priorityComboBox;
+    private JComboBox<Priority> priorityComboBox;
     private JLabel priorityLabel;
     private JTextField taskTitleField;
     private JLabel dueDateLabel;
@@ -50,7 +54,11 @@ public class EditTaskForm extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                taskController.editTask(currentTask, taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(), (Priority) priorityComboBox.getSelectedItem(), (Date) dueDateSpinner.getValue());
+
+                Date dateresult = (Date) dueDateSpinner.getValue();
+                LocalDate localdateresult = dateresult.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+                taskController.editTask(currentTask, taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(), (Priority) priorityComboBox.getSelectedItem(), localdateresult);
             }
         });
     }
@@ -73,7 +81,7 @@ public class EditTaskForm extends JFrame {
     private void initializeDueDateSpinner()
     {
         SpinnerDateModel dateModel = new SpinnerDateModel(
-                currentTask.getDueDate(),
+                Date.from(currentTask.getDueDate().atStartOfDay().toInstant(ZoneOffset.UTC)),
                 todayWithoutTime(),
                 null,
                 Calendar.DAY_OF_MONTH

@@ -9,6 +9,7 @@ import Models.TaskList;
 import Observers.TaskPanelObserver;
 
 import javax.swing.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -28,7 +29,7 @@ public class TaskController {
         taskObservers.forEach(n -> n.onListStateChange(list));
     }
 
-    public void createTask(TaskList list, String taskName, Category taskCategory, Priority taskPriority, Date dueDate)
+    public void createTask(TaskList list, String taskName, Category taskCategory, Priority taskPriority, LocalDate dueDate)
     {
         try {
             taskHandler.processCreateTask(list, taskName, taskCategory, taskPriority, dueDate);
@@ -44,7 +45,7 @@ public class TaskController {
         notifyTaskPanelObservers(taskHandler.processDeleteTask(list, task));
     }
 
-    public void editTask(Task task, String taskName, Category taskCategory, Priority taskPriority, Date dueDate)
+    public void editTask(Task task, String taskName, Category taskCategory, Priority taskPriority, LocalDate dueDate)
     {
         try {
             taskHandler.processEditTask(task, taskName, taskCategory, taskPriority, dueDate);

@@ -49,7 +49,7 @@ public class TaskList {
         }
         if (criterion == SortCriterion.BY_DUE_DATE)
         {
-            copyList = copyList.stream().sorted(Comparator.comparingInt( n -> (int) n.getDueDate().getTime())).collect(Collectors.toList());
+            copyList = copyList.stream().sorted(Comparator.comparingLong( n -> n.getDueDate().toEpochDay())).collect(Collectors.toList());
         }
         if (criterion == SortCriterion.BY_CATEGORY)
         {

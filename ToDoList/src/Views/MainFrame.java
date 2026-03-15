@@ -41,6 +41,11 @@ public class MainFrame extends JFrame {
         switchWindow(new AddTaskForm(this));
     }
 
+    public void showReportForm()
+    {
+        switchWindow(new ReportForm(this));
+    }
+
     public void showEditTaskForm()
     {
         switchWindow(new EditTaskForm(this));
