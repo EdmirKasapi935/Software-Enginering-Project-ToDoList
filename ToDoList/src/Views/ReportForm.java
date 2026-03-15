@@ -8,6 +8,7 @@ import Models.ReportData;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Map;
 
 public class ReportForm extends JFrame {
@@ -55,6 +56,21 @@ public class ReportForm extends JFrame {
         });
 
         showReportValues(this.taskReport);
+        exportButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                int option = chooser.showSaveDialog(null);
+
+                if (option == JFileChooser.APPROVE_OPTION)
+                {
+                    File selectedFile = chooser.getSelectedFile();
+
+                    reportController.exportReportData(selectedFile, taskReport);
+                }
+
+            }
+        });
     }
 
     private void showReportValues(ReportData taskReport)
