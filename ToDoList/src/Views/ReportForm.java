@@ -68,7 +68,6 @@ public class ReportForm extends JFrame {
 
                     reportController.exportReportData(selectedFile, taskReport);
                 }
-
             }
         });
     }

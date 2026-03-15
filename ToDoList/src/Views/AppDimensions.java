@@ -5,7 +5,7 @@ import java.awt.*;
 public class AppDimensions {
 
     //Frame config
-    public static final Dimension GUI_SIZE = new Dimension(540, 760);
+    public static final Dimension GUI_SIZE = new Dimension(540, 800);
 
     //Banner config
     public static final Dimension BANNER_SIZE = new Dimension(GUI_SIZE.width, 54);

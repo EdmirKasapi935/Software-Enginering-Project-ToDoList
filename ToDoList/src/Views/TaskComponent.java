@@ -27,7 +27,7 @@ public class TaskComponent extends JPanel implements ActionListener {
 
         taskField = new JTextPane();
         taskField.setEditable(false);
-        taskField.setPreferredSize(new Dimension( (int)(AppDimensions.TASKFIELD_SIZE.width * 0.85) , AppDimensions.TASKFIELD_SIZE.height));
+        taskField.setPreferredSize(new Dimension( (int)(AppDimensions.TASKFIELD_SIZE.width * 0.75) , AppDimensions.TASKFIELD_SIZE.height));
         taskField.setContentType("text/html");
         renderTaskText(task);
 

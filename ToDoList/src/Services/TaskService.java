@@ -1,13 +1,12 @@
-package Handlers;
+package Services;
 
 import CustomExceptions.TaskValidationException;
 import Models.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
-public class TaskHandler {
+public class TaskService {
 
     private static final Validator validator = new Validator();
 

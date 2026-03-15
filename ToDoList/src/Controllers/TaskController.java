@@ -1,7 +1,7 @@
 package Controllers;
 
 import CustomExceptions.TaskValidationException;
-import Handlers.TaskHandler;
+import Services.TaskService;
 import Models.Category;
 import Models.Priority;
 import Models.Task;
@@ -11,11 +11,10 @@ import Observers.TaskPanelObserver;
 import javax.swing.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class TaskController {
 
-    private static final TaskHandler taskHandler = new TaskHandler();
+    private static final TaskService taskHandler = new TaskService();
 
     private final ArrayList<TaskPanelObserver> taskObservers = new ArrayList<>();
 

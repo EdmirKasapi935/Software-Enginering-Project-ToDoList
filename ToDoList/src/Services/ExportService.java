@@ -1,68 +1,18 @@
-package Handlers;
+package Services;
 
-import Models.*;
+import CustomExceptions.EmptyListException;
+import Models.Priority;
+import Models.ReportData;
+import Models.Task;
+import Models.TaskList;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Map;
 
-public class ReportHandler {
-
-    public ReportData processGenerateReport(List<TaskList> taskLists)
-    {
-        ReportData report = new ReportData();
-
-        int totalTasks = 0;
-        int completedTasks = 0;
-        int pendingTasks = 0;
-        int dueTodayTasks = 0;
-        int overdueTasks = 0;
-        Map<Priority, Integer> priorityCounts = new HashMap<>();
-
-        for (TaskList taskList: taskLists) {
-
-            for (Task task: taskList.getTasks()) {
-
-                totalTasks++;
-
-                if (task.getStatus() == Status.DONE)
-                {
-                    completedTasks++;
-                }
-                else
-                {
-                    pendingTasks++;
-
-                    if (task.isDueToday())
-                    {
-                        dueTodayTasks++;
-                    }
-
-                    if (task.isOverdue())
-                    {
-                        overdueTasks++;
-                    }
-
-                }
-
-                priorityCounts.merge(task.getTaskPriority(), 1, Integer::sum);
-
-            }
-
-        }
-
-        report.setTotalTasks(totalTasks);
-        report.setCompletedTasks(completedTasks);
-        report.setPendingTasks(pendingTasks);
-        report.setDueTodayTasks(dueTodayTasks);
-        report.setOverdueTasks(overdueTasks);
-        report.setPriorityCounts(priorityCounts);
-
-        return report;
-    }
+public class ExportService {
 
     public void processExportReportData(File file, ReportData report) throws IOException
     {
@@ -108,6 +58,28 @@ public class ReportHandler {
             else
             {
                 writer.println("Low: " + 0);
+            }
+
+        }
+
+    }
+
+    public void processExportTaskList(File file, TaskList tasks) throws IOException, EmptyListException
+    {
+        if (tasks.getTasks().size() == 0)
+        {
+            throw new EmptyListException("Cannot export a list that contains no tasks!");
+        }
+
+        try(PrintWriter writer = new PrintWriter(file)) {
+
+            writer.println("List: " + tasks.getListName());
+            writer.println("-----------------------------");
+            writer.println("");
+
+            for (Task task:tasks.getTasks()) {
+                LocalDate dueDate = task.getDueDate();
+                writer.println("□ " + task.getTaskText() + " |  CATEGORY: " + task.getTaskCategory() + " | PRIORITY: " + task.getTaskPriority() + " | Due: " + dueDate.getDayOfMonth() + "/" + dueDate.getMonthValue() + "/" + dueDate.getYear() );
             }
 
         }

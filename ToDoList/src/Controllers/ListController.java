@@ -1,21 +1,26 @@
 package Controllers;
 
 import CustomExceptions.EmptyInputException;
+import CustomExceptions.EmptyListException;
 import CustomExceptions.ListNameLengthExceededException;
 import CustomExceptions.ListNameUnavailableException;
-import Handlers.ListHandler;
+import Services.ExportService;
+import Services.ListService;
 import Models.TaskList;
 import Observers.ListNameObserver;
 import Observers.ListObserver;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListController {
 
-    private static final ListHandler listHandler = new ListHandler();
+    private static final ListService listHandler = new ListService();
+    private static final ExportService exportHandler = new ExportService();
 
     private final ArrayList<ListObserver> listObservers = new ArrayList<>();
     private final ArrayList<ListNameObserver> nameObservers = new ArrayList<>();
@@ -64,6 +69,17 @@ public class ListController {
             JOptionPane.showMessageDialog(new Button("OK"), e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
+    }
+
+    public void exportTaskList(File file, TaskList list)
+    {
+        try {
+            exportHandler.processExportTaskList(file, list);
+            JOptionPane.showMessageDialog(null, "Your list was exported successfully!", "Task List Exported", JOptionPane.INFORMATION_MESSAGE);
+        }catch (IOException | EmptyListException e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 }

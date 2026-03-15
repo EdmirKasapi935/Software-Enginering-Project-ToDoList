@@ -1,4 +1,4 @@
-package Handlers;
+package Services;
 
 import CustomExceptions.EmptyInputException;
 import CustomExceptions.ListNameLengthExceededException;
@@ -7,7 +7,7 @@ import Models.TaskList;
 
 import java.util.List;
 
-public class ListHandler {
+public class ListService {
 
     private final Validator validator = new Validator();
 

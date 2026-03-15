@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,14 +60,14 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
         taskPanel.add(taskComponentPanel);
 
         JScrollPane scrollPane = new JScrollPane(taskPanel);
-        scrollPane.setBounds(8, 70,  AppDimensions.TASKPANEL_SIZE.width,  AppDimensions.TASKPANEL_SIZE.height);
-        scrollPane.setMaximumSize( AppDimensions.TASKPANEL_SIZE);
+        scrollPane.setBounds(8, 70,  AppDimensions.TASKPANEL_SIZE.width,  (int) (AppDimensions.TASKPANEL_SIZE.height * 0.9));
+        scrollPane.setMaximumSize(AppDimensions.TASKPANEL_SIZE);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
-        buttonPanel.setBounds(-5,  AppDimensions.GUI_SIZE.height - 88,  AppDimensions.ADDTASKBUTTON_SIZE.width,  AppDimensions.ADDTASKBUTTON_SIZE.height);
+        buttonPanel.setBounds(-5,  AppDimensions.GUI_SIZE.height - 110,  AppDimensions.ADDTASKBUTTON_SIZE.width,  (int)(AppDimensions.ADDTASKBUTTON_SIZE.height * 2));
 
         JButton mainMenuButton = new JButton("Main Menu");
         mainMenuButton.addActionListener(this);
@@ -84,13 +85,20 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
         sortButton.addActionListener(this);
         buttonPanel.add(sortButton);
 
-
         sortBox = new JComboBox<>();
         sortBox.addItem(SortCriterion.NONE);
         sortBox.addItem(SortCriterion.BY_PRIORITY);
         sortBox.addItem(SortCriterion.BY_DUE_DATE);
         sortBox.addItem(SortCriterion.BY_CATEGORY);
         buttonPanel.add(sortBox);
+
+        JButton deleteButton = new JButton("Delete List");
+        deleteButton.addActionListener(this);
+        buttonPanel.add(deleteButton);
+
+        JButton exportButton = new JButton("Export List");
+        exportButton.addActionListener(this);
+        buttonPanel.add(exportButton);
 
         this.getContentPane().add(pageTitle);
         this.getContentPane().add(scrollPane);
@@ -128,6 +136,27 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
             mainFrame.showAddTaskForm();
         } else if (command.equalsIgnoreCase("Sort")) {
            populateTaskPanel(currentList, (SortCriterion) sortBox.getSelectedItem());
+        } else if (command.equalsIgnoreCase("Delete List")) {
+
+            int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + currentList.getListName() + "?", "Delete Task List", JOptionPane.YES_NO_OPTION);
+
+            if (choice == JOptionPane.YES_OPTION) {
+                listController.deleteList(ListRepository.getInstance().getAllLists(), currentList);
+                mainFrame.showMainListMenu();
+            }
+
+        } else if (command.equalsIgnoreCase("Export List")) {
+
+            JFileChooser chooser = new JFileChooser();
+            int option = chooser.showSaveDialog(null);
+
+            if (option == JFileChooser.APPROVE_OPTION)
+            {
+                File selectedFile = chooser.getSelectedFile();
+
+                listController.exportTaskList(selectedFile, currentList);
+            }
+
         }
     }
 

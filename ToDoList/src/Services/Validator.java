@@ -1,4 +1,4 @@
-package Handlers;
+package Services;
 
 import CustomExceptions.EmptyInputException;
 import CustomExceptions.ListNameLengthExceededException;

@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainListMenu extends JFrame implements ActionListener, ListObserver {
 
@@ -72,6 +73,10 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
         reportFormButton.addActionListener(this);
         buttonPanel.add(reportFormButton);
 
+        JButton searchButton = new JButton("Search Lists");
+        searchButton.addActionListener(this);
+        buttonPanel.add(searchButton);
+
         this.getContentPane().add(bannerLabel);
         this.getContentPane().add(scrollPane);
         this.getContentPane().add(buttonPanel);
@@ -90,6 +95,8 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
             }
         } else if (command.equalsIgnoreCase("View Report")) {
             mainFrame.showReportForm();
+        } else if (command.equalsIgnoreCase("Search Lists")) {
+            searchLists();
         }
     }
 
@@ -100,6 +107,22 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
         if (choice == JOptionPane.YES_OPTION) {
             listController.deleteList(this.taskLists, list);
         }
+    }
+
+    private void searchLists()
+    {
+        String searchTerm = JOptionPane.showInputDialog("Enter the name of the lists you would like to search below");
+
+        //if the input is null, the list just reverts to normal
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+
+            List<TaskList> result = taskLists.stream().filter(n -> n.getListName().contains(searchTerm)).toList();
+            refreshListPanel(result);
+        }
+        else {
+            refreshListPanel(taskLists);
+        }
+
     }
 
     @Override

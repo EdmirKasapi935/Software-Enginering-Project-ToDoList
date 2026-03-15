@@ -1,7 +1,8 @@
 package Controllers;
 
 import Data.ListRepository;
-import Handlers.ReportHandler;
+import Services.ExportService;
+import Services.ReportService;
 import Models.ReportData;
 
 import javax.swing.*;
@@ -10,7 +11,8 @@ import java.io.IOException;
 
 public class ReportController
 {
-    private ReportHandler reportHandler = new ReportHandler();
+    private final ReportService reportHandler = new ReportService();
+    private final ExportService exportHandler = new ExportService();
 
     public ReportData generateReport(ListRepository listRepository)
     {
@@ -20,7 +22,7 @@ public class ReportController
     public void exportReportData(File file, ReportData report)
     {
         try {
-            reportHandler.processExportReportData(file, report);
+            exportHandler.processExportReportData(file, report);
             JOptionPane.showMessageDialog(null, "Your report was exported successfully!", "Report Data Exported", JOptionPane.INFORMATION_MESSAGE);
         }catch (IOException e)
         {
