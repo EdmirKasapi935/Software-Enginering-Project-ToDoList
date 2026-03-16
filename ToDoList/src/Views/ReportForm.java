@@ -4,6 +4,7 @@ import Controllers.ReportController;
 import Data.ListRepository;
 import Models.Priority;
 import Models.ReportData;
+import Observers.ReportObserver;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -11,7 +12,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Map;
 
-public class ReportForm extends JFrame {
+public class ReportForm extends JFrame implements ReportObserver {
 
     private final ReportController reportController = new ReportController();
 
@@ -46,6 +47,7 @@ public class ReportForm extends JFrame {
 
         this.setContentPane(mainPanel);
 
+        reportController.addReportObserver(this);
         this.taskReport = reportController.generateReport(ListRepository.getInstance());
 
         mainMenuButton.addActionListener(new ActionListener() {
@@ -108,5 +110,10 @@ public class ReportForm extends JFrame {
         {
             lowPriorityValueLabel.setText(String.valueOf(0));
         }
+    }
+
+    @Override
+    public void onReportStateChanged(ReportData reportData) {
+        showReportValues(reportData);
     }
 }

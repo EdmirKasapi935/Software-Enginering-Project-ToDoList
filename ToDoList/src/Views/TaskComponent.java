@@ -42,6 +42,8 @@ public class TaskComponent extends JPanel implements ActionListener {
         editButton.setBackground(Color.YELLOW);
         editButton.addActionListener(this);
 
+        renderTextAreaColor();
+
         add(checkbox);
         add(taskField);
         add(deleteButton);
@@ -82,6 +84,18 @@ public class TaskComponent extends JPanel implements ActionListener {
 
     }
 
+    private void renderTextAreaColor()
+    {
+        if (task.isDueToday())
+        {
+            taskField.setBackground(Color.YELLOW);
+        } else if (task.isOverdue()) {
+            taskField.setBackground(Color.RED);
+        }else {
+            taskField.setBackground(Color.WHITE);
+        }
+    }
+
     private void activateCheckbox()
     {
         checkbox = new JCheckBox();
@@ -100,11 +114,13 @@ public class TaskComponent extends JPanel implements ActionListener {
 
             task.markAsDone();
             renderTaskText(task);
+            renderTextAreaColor();
 
         } else if (!checkbox.isSelected()) {
 
             task.markAsUndone();
             renderTaskText(task);
+            renderTextAreaColor();
         }
 
         if(e.getActionCommand().equalsIgnoreCase("X")){

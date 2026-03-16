@@ -1,6 +1,7 @@
 package Controllers;
 
 import Data.ListRepository;
+import Observers.ReportObserver;
 import Services.ExportService;
 import Services.ReportService;
 import Models.ReportData;
@@ -8,11 +9,25 @@ import Models.ReportData;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ReportController
 {
-    private final ReportService reportHandler = new ReportService();
+    private static final ReportService reportHandler = new ReportService();
     private final ExportService exportHandler = new ExportService();
+
+    private static final ArrayList<ReportObserver> reportObservers = new ArrayList<>();
+
+    public void addReportObserver(ReportObserver observer)
+    {
+        reportObservers.add(observer);
+    }
+
+    public static void notifyReportObserverFromBackground(ListRepository listRepository)
+    {
+        reportObservers.forEach(n -> n.onReportStateChanged(reportHandler.processGenerateReport(listRepository.getAllLists())));
+    }
+
 
     public ReportData generateReport(ListRepository listRepository)
     {

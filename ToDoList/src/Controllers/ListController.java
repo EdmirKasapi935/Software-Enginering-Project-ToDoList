@@ -22,22 +22,27 @@ public class ListController {
     private static final ListService listHandler = new ListService();
     private static final ExportService exportHandler = new ExportService();
 
-    private final ArrayList<ListObserver> listObservers = new ArrayList<>();
-    private final ArrayList<ListNameObserver> nameObservers = new ArrayList<>();
+    private static final ArrayList<ListObserver> listObservers = new ArrayList<>();
+    private static final ArrayList<ListNameObserver> nameObservers = new ArrayList<>();
 
     public void addListObserver(ListObserver observer)
     {
-        this.listObservers.add(observer);
+        listObservers.add(observer);
     }
 
     public void addNameObserver(ListNameObserver observer)
     {
-        this.nameObservers.add(observer);
+        nameObservers.add(observer);
     }
 
     private void notifyListObservers(List<TaskList> taskLists)
     {
-        this.listObservers.forEach(n -> n.onListsCollectionUpdated(taskLists));
+        listObservers.forEach(n -> n.onListsCollectionUpdated(taskLists));
+    }
+
+    public static void notifyListObserversFromBackground(List<TaskList> taskLists)
+    {
+        listObservers.forEach(n -> n.onListsCollectionUpdated(taskLists));
     }
 
     private void notifyNameObservers(TaskList list)

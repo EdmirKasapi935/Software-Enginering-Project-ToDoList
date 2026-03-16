@@ -162,16 +162,19 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
 
     private void populateTaskPanel(TaskList list,SortCriterion criterion) {
 
-        taskComponentPanel.removeAll();
+        if (taskComponentPanel != null)
+        {
+            taskComponentPanel.removeAll();
 
-        List<Task> tasks = list.getSortedList(criterion);
+            List<Task> tasks = list.getSortedList(criterion);
 
-        for (Task task: tasks) {
-            taskComponentPanel.add(new TaskComponent(this, task));
+            for (Task task: tasks) {
+                taskComponentPanel.add(new TaskComponent(this, task));
+            }
+
+            taskComponentPanel.revalidate();
+            taskComponentPanel.repaint();
         }
-
-        taskComponentPanel.revalidate();
-        taskComponentPanel.repaint();
     }
 
 

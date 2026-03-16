@@ -16,7 +16,7 @@ public class TaskController {
 
     private static final TaskService taskHandler = new TaskService();
 
-    private final ArrayList<TaskPanelObserver> taskObservers = new ArrayList<>();
+    private static final ArrayList<TaskPanelObserver> taskObservers = new ArrayList<>();
 
     public void addTaskPanelObserver(TaskPanelObserver observer)
     {
@@ -24,6 +24,11 @@ public class TaskController {
     }
 
     private void notifyTaskPanelObservers(TaskList list)
+    {
+        taskObservers.forEach(n -> n.onListStateChange(list));
+    }
+
+    public static void notifyTaskPanelObserversFromBackground(TaskList list)
     {
         taskObservers.forEach(n -> n.onListStateChange(list));
     }

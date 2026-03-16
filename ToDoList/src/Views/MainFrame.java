@@ -1,15 +1,21 @@
 package Views;
 
 import Models.TaskList;
+import Scheduler.NotificationScheduler;
+import Services.NotificationService;
 import Views.AppDimensions;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainFrame extends JFrame {
 
     ArrayList<TaskList> taskLists = new ArrayList<>();
+    NotificationService notificationService = new NotificationService();
+    NotificationScheduler scheduler = new NotificationScheduler(notificationService);
 
     public MainFrame()
     {
@@ -20,9 +26,25 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
+        NotificationService.initialize();
+        scheduler.start();
+
         showMainListMenu();
 
         this.setVisible(true);
+
+        addWindowListener(
+
+                new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+
+                        scheduler.stop();
+
+                    }
+                }
+
+        );
 
     }
 

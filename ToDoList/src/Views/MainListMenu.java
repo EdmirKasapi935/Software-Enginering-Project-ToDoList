@@ -131,14 +131,20 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
     }
 
     private void refreshListPanel(List<TaskList> taskLists) {
-        listComponentPanel.removeAll();
 
-        for (TaskList list: taskLists) {
-            listComponentPanel.add(new ListComponent(this, list.getListName(), list));
+        if (listComponentPanel != null)
+        {
+            listComponentPanel.removeAll();
+
+            for (TaskList list: taskLists) {
+                listComponentPanel.add(new ListComponent(this, list.getListName(), list));
+            }
+
+            listComponentPanel.revalidate();
+            listComponentPanel.repaint();
         }
 
-        listComponentPanel.revalidate();
-        listComponentPanel.repaint();
+
     }
 
     public void goToTaskMenu()

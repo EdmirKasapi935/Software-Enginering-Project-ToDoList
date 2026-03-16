@@ -30,6 +30,15 @@ public class ListComponent extends JPanel implements ActionListener {
         this.parentWindow = parentWindow;
         this.taskList = taskList;
 
+        if(taskList.getTasks().stream().anyMatch( n -> n.isDueToday()))
+        {
+            listButton.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 2));
+        }
+
+        if (taskList.getTasks().stream().anyMatch( n -> n.isOverdue())) {
+            listButton.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+        }
+
         this.setLayout(new BorderLayout());
         this.add(listButton, BorderLayout.CENTER);
         this.add(deleteButton, BorderLayout.EAST);
