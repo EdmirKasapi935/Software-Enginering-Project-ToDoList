@@ -3,7 +3,6 @@ package Views;
 import Models.Priority;
 import Models.Status;
 import Models.Task;
-import Views.AppDimensions;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,11 +11,11 @@ import java.awt.event.ActionListener;
 
 public class TaskComponent extends JPanel implements ActionListener {
     private JCheckBox checkbox;
-    private JTextPane taskField;
-    private JButton deleteButton;
-    private JButton editButton;
-    private TaskMenu parentWindow;
-    private Task task;
+    private final JTextPane taskField;
+    private final JButton deleteButton;
+    private final JButton editButton;
+    private final TaskMenu parentWindow;
+    private final Task task;
 
     public TaskComponent(TaskMenu parentWindow, Task task)
     {
@@ -51,17 +50,13 @@ public class TaskComponent extends JPanel implements ActionListener {
 
     }
 
-    public JTextPane getTaskField() {
-        return taskField;
-    }
-
     private void renderTaskText(Task task)
     {
         if (task.getStatus() == Status.UNDONE)
         {
-            taskField.setText("<html><h4 style='text-align:center'>" + task.getTaskText() + "<br>  Category: " + task.getTaskCategory() + " | Due: " + task.getDueDate().toString() + "<h3></html>");
+            taskField.setText("<html><h4 style='text-align:center'>" + task.getTaskText() + "<br>  Category: " + task.getTaskCategory() + " | Due: " + task.getDueDateString() + "<h3></html>");
         }else if (task.getStatus() == Status.DONE ){
-            taskField.setText("<html><h4 style='text-align:center'><s>" + task.getTaskText() + "</s>" + "<br>  Category: " + task.getTaskCategory() + " | Due: " + task.getDueDate().toString() + "<h4></html>");
+            taskField.setText("<html><h4 style='text-align:center'><s>" + task.getTaskText() + "</s>" + "<br>  Category: " + task.getTaskCategory() + " | Due: " + task.getDueDateString() + "<h4></html>");
         }
 
 
@@ -90,7 +85,7 @@ public class TaskComponent extends JPanel implements ActionListener {
         {
             taskField.setBackground(Color.YELLOW);
         } else if (task.isOverdue()) {
-            taskField.setBackground(Color.RED);
+            taskField.setBackground(Color.PINK);
         }else {
             taskField.setBackground(Color.WHITE);
         }

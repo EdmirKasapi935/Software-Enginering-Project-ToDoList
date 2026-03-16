@@ -1,5 +1,6 @@
 package Controllers;
 
+import CustomExceptions.EmptyInputException;
 import Data.ListRepository;
 import Observers.ReportObserver;
 import Services.ExportService;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class ReportController
 {
     private static final ReportService reportHandler = new ReportService();
-    private final ExportService exportHandler = new ExportService();
+    private static final ExportService exportHandler = new ExportService();
 
     private static final ArrayList<ReportObserver> reportObservers = new ArrayList<>();
 
@@ -39,7 +40,7 @@ public class ReportController
         try {
             exportHandler.processExportReportData(file, report);
             JOptionPane.showMessageDialog(null, "Your report was exported successfully!", "Report Data Exported", JOptionPane.INFORMATION_MESSAGE);
-        }catch (IOException e)
+        }catch (IOException | EmptyInputException e)
         {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

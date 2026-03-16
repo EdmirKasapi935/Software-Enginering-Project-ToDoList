@@ -18,9 +18,9 @@ public class AddTaskForm extends JFrame{
     private final TaskController taskController = new TaskController();
 
     private JLabel taskTitleLabel;
-    private JComboBox categoryComboBox;
+    private JComboBox<Category> categoryComboBox;
     private JLabel categoryLabel;
-    private JComboBox priorityComboBox;
+    private JComboBox<Priority> priorityComboBox;
     private JLabel priorityLabel;
     private JPanel mainPanel;
     private JButton submitButton;

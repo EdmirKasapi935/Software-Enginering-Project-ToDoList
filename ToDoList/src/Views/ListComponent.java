@@ -1,8 +1,8 @@
 package Views;
 
 import Data.AppContext;
+import Models.Task;
 import Models.TaskList;
-import Views.AppDimensions;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,10 +11,10 @@ import java.awt.event.ActionListener;
 
 public class ListComponent extends JPanel implements ActionListener {
 
-    private JButton listButton;
-    private JButton deleteButton;
-    private MainListMenu parentWindow;
-    private TaskList taskList;
+    private final JButton listButton;
+    private final JButton deleteButton;
+    private final MainListMenu parentWindow;
+    private final TaskList taskList;
 
     public ListComponent(MainListMenu parentWindow, String listName, TaskList taskList)
     {
@@ -30,12 +30,12 @@ public class ListComponent extends JPanel implements ActionListener {
         this.parentWindow = parentWindow;
         this.taskList = taskList;
 
-        if(taskList.getTasks().stream().anyMatch( n -> n.isDueToday()))
+        if(taskList.getTasks().stream().anyMatch(Task::isDueToday))
         {
             listButton.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 2));
         }
 
-        if (taskList.getTasks().stream().anyMatch( n -> n.isOverdue())) {
+        if (taskList.getTasks().stream().anyMatch(Task::isOverdue)) {
             listButton.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
         }
 

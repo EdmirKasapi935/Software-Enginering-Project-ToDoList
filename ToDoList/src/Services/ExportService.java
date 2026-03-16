@@ -1,10 +1,8 @@
 package Services;
 
+import CustomExceptions.EmptyInputException;
 import CustomExceptions.EmptyListException;
-import Models.Priority;
-import Models.ReportData;
-import Models.Task;
-import Models.TaskList;
+import Models.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +12,17 @@ import java.util.Map;
 
 public class ExportService {
 
-    public void processExportReportData(File file, ReportData report) throws IOException
+    public void processExportReportData(File file, ReportData report) throws IOException, EmptyInputException
     {
+        if (file == null)
+        {
+            throw new EmptyInputException("File was not provided or found!");
+        }
+
+        if (report == null)
+        {
+            throw new EmptyInputException("Report data was not provided!");
+        }
 
         try(PrintWriter writer = new PrintWriter(file)) {
 
@@ -64,8 +71,18 @@ public class ExportService {
 
     }
 
-    public void processExportTaskList(File file, TaskList tasks) throws IOException, EmptyListException
+    public void processExportTaskList(File file, TaskList tasks) throws IOException, EmptyListException, EmptyInputException
     {
+        if (file == null)
+        {
+            throw new EmptyInputException("File was not provided or found!");
+        }
+
+        if (tasks == null)
+        {
+            throw new EmptyInputException("List data was not provided!");
+        }
+
         if (tasks.getTasks().size() == 0)
         {
             throw new EmptyListException("Cannot export a list that contains no tasks!");
@@ -77,9 +94,20 @@ public class ExportService {
             writer.println("-----------------------------");
             writer.println("");
 
+
             for (Task task:tasks.getTasks()) {
-                LocalDate dueDate = task.getDueDate();
-                writer.println("□ " + task.getTaskText() + " |  CATEGORY: " + task.getTaskCategory() + " | PRIORITY: " + task.getTaskPriority() + " | Due: " + dueDate.getDayOfMonth() + "/" + dueDate.getMonthValue() + "/" + dueDate.getYear() );
+
+                String completionSquare = "";
+
+                if (task.getStatus() == Status.UNDONE)
+                {
+                    completionSquare = "□ ";
+                }
+                else {
+                    completionSquare = "▣ ";
+                }
+
+                writer.println(completionSquare + task.getTaskText() + " |  CATEGORY: " + task.getTaskCategory() + " | PRIORITY: " + task.getTaskPriority() + " | Due: " + task.getDueDateString() );
             }
 
         }

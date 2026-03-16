@@ -47,7 +47,7 @@ public class ListController {
 
     private void notifyNameObservers(TaskList list)
     {
-        this.nameObservers.forEach(n -> n.onListNameChange(list));
+        nameObservers.forEach(n -> n.onListNameChange(list));
     }
 
     public void createList(List<TaskList> lists, String listName)
@@ -81,7 +81,7 @@ public class ListController {
         try {
             exportHandler.processExportTaskList(file, list);
             JOptionPane.showMessageDialog(null, "Your list was exported successfully!", "Task List Exported", JOptionPane.INFORMATION_MESSAGE);
-        }catch (IOException | EmptyListException e)
+        }catch (IOException | EmptyListException | EmptyInputException e)
         {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

@@ -1,25 +1,23 @@
 package Data;
 
 import Models.TaskList;
+import Services.StorageService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListRepository {
 
-    private static ListRepository instance;
+    private static final ListRepository instance = new ListRepository();
 
-    private final ArrayList<TaskList> taskLists = new ArrayList<>();
+    private final List<TaskList> taskLists;
 
-    private ListRepository(){}
+    private ListRepository(){
+        taskLists = StorageService.loadTasks();
+    }
 
     public static ListRepository getInstance()
     {
-        if (instance == null)
-        {
-            instance = new ListRepository();
-        }
-
         return instance;
     }
 

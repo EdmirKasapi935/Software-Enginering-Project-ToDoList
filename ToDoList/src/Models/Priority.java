@@ -1,6 +1,8 @@
 package Models;
 
-public enum Priority {
+import java.io.Serializable;
+
+public enum Priority implements Serializable {
 
     LOW(3),
     MEDIUM(2),

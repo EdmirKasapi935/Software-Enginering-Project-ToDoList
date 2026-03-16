@@ -15,7 +15,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TaskMenu extends JFrame implements ActionListener, ListNameObserver, TaskPanelObserver {
@@ -60,7 +59,7 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
         taskPanel.add(taskComponentPanel);
 
         JScrollPane scrollPane = new JScrollPane(taskPanel);
-        scrollPane.setBounds(8, 70,  AppDimensions.TASKPANEL_SIZE.width,  (int) (AppDimensions.TASKPANEL_SIZE.height * 0.9));
+        scrollPane.setBounds(8, 70,  AppDimensions.TASKPANEL_SIZE.width,  (int) (AppDimensions.TASKPANEL_SIZE.height * 0.97));
         scrollPane.setMaximumSize(AppDimensions.TASKPANEL_SIZE);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

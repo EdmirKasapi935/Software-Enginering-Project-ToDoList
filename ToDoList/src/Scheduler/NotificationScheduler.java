@@ -22,8 +22,8 @@ public class NotificationScheduler {
         scheduler.scheduleAtFixedRate(
                 notificationService::checkTasks,
                 0,
-                10,
-                TimeUnit.SECONDS
+                1,
+                TimeUnit.HOURS
         );
     }
 

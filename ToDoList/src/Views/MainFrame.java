@@ -1,8 +1,10 @@
 package Views;
 
+import Data.ListRepository;
 import Models.TaskList;
 import Scheduler.NotificationScheduler;
 import Services.NotificationService;
+import Services.StorageService;
 import Views.AppDimensions;
 
 import javax.swing.*;
@@ -22,7 +24,7 @@ public class MainFrame extends JFrame {
 
         this.setSize(AppDimensions.GUI_SIZE);
         this.setTitle("ToDoList");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
 
@@ -39,7 +41,7 @@ public class MainFrame extends JFrame {
                     @Override
                     public void windowClosing(WindowEvent e) {
 
-                        scheduler.stop();
+                        onExit();
 
                     }
                 }
@@ -78,6 +80,19 @@ public class MainFrame extends JFrame {
         this.setContentPane(frame.getContentPane());
         repaint();
         revalidate();
+    }
+
+    private void onExit() {
+        int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+
+            dispose();
+            StorageService.saveLists(ListRepository.getInstance().getAllLists());
+            scheduler.stop();
+            System.exit(0);
+        }
+
     }
 
 }

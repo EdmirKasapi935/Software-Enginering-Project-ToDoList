@@ -1,9 +1,13 @@
 package Models;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 
-public class Task {
+public class Task implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 771L;
 
     private String taskText;
     private Priority taskPriority;
@@ -88,5 +92,10 @@ public class Task {
     public boolean isDueToday()
     {
         return status != Status.DONE && dueDate.equals(LocalDate.now());
+    }
+
+    public String getDueDateString()
+    {
+        return this.dueDate.getDayOfMonth() + "/" + dueDate.getMonthValue() + "/" + dueDate.getYear();
     }
 }

@@ -1,6 +1,8 @@
 package Models;
 
-public enum Category {
+import java.io.Serializable;
+
+public enum Category implements Serializable {
     PERSONAL(1),
     WORK(2),
     EVENT(3),
