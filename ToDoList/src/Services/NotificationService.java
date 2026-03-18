@@ -17,13 +17,16 @@ public class NotificationService {
     private int lastDueToday = 0;
     private int lastOverdue = 0;
 
+    //This function initializes the service, if never called, the notifications will never be sent
     public static void initialize()
     {
+        //checks if java notifications are supported
         if (!SystemTray.isSupported())
         {
             return;
         }
 
+        //The part beloww creates the notification traz and icon
         SystemTray systemTray = SystemTray.getSystemTray();
 
         Image image = Toolkit.getDefaultToolkit().createImage("notificationIcon.png");
@@ -40,6 +43,7 @@ public class NotificationService {
 
     }
 
+    //This function checks the amount of tasks due today and overdue
     public void checkTasks()
     {
         int dueToday = 0;
@@ -61,6 +65,8 @@ public class NotificationService {
 
         }
 
+
+        //This part here makes sure no duplicate notifications are sent while the app is running
         if (dueToday != lastDueToday || overdue != lastOverdue)
         {
             String message = "";
@@ -82,9 +88,9 @@ public class NotificationService {
             lastOverdue = overdue;
         }
 
+        //this part notifies the observers from the outside. This function is supposed to run on the background
         ListController.notifyListObserversFromBackground(lists);
         ReportController.notifyReportObserverFromBackground(ListRepository.getInstance());
-
         if (AppContext.getInstance().getCurrentList() != null)
         {
             TaskController.notifyTaskPanelObserversFromBackground(AppContext.getInstance().getCurrentList());
@@ -93,10 +99,12 @@ public class NotificationService {
 
     }
 
+    //This message shows the notification
     public void showNotification(String title, String message)
     {
         if (trayIcon != null)
         {
+            //DisplayMessage makes the notification appear
             trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
         }
     }

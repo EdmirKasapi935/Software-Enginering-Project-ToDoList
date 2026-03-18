@@ -22,30 +22,30 @@ public class ListController {
     private static final ListService listHandler = new ListService();
     private static final ExportService exportHandler = new ExportService();
 
-    private static final ArrayList<ListObserver> listObservers = new ArrayList<>();
-    private static final ArrayList<ListNameObserver> nameObservers = new ArrayList<>();
+    private static final ArrayList<ListObserver> listObservers = new ArrayList<>(); //this is where the list observers are notified, they observe the state of the list
+    private static final ArrayList<ListNameObserver> nameObservers = new ArrayList<>(); //this is where the list name observers are stored, they keep track of the name of the list for it to be displayed in the task menu
 
-    public void addListObserver(ListObserver observer)
+    public void addListObserver(ListObserver observer) //this function adds a list observer
     {
         listObservers.add(observer);
     }
 
-    public void addNameObserver(ListNameObserver observer)
+    public void addNameObserver(ListNameObserver observer) //tis function adds a name observer
     {
         nameObservers.add(observer);
     }
 
-    private void notifyListObservers(List<TaskList> taskLists)
+    private void notifyListObservers(List<TaskList> taskLists) //the list observers are notified with this function
     {
         listObservers.forEach(n -> n.onListsCollectionUpdated(taskLists));
     }
 
-    public static void notifyListObserversFromBackground(List<TaskList> taskLists)
+    public static void notifyListObserversFromBackground(List<TaskList> taskLists) //the list observers are notified with this function, but from the background, used by the notification service to update the menu
     {
         listObservers.forEach(n -> n.onListsCollectionUpdated(taskLists));
     }
 
-    private void notifyNameObservers(TaskList list)
+    private void notifyNameObservers(TaskList list)//the list observers are notified with this function
     {
         nameObservers.forEach(n -> n.onListNameChange(list));
     }

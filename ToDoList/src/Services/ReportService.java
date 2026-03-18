@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class ReportService {
 
+    //this function is responsible for generating a report
     public ReportData processGenerateReport(List<TaskList> taskLists)
     {
         ReportData report = new ReportData();
@@ -18,6 +19,7 @@ public class ReportService {
         int overdueTasks = 0;
         Map<Priority, Integer> priorityCounts = new HashMap<>();
 
+        //this part conducts the data analysis
         for (TaskList taskList: taskLists) {
 
             for (Task task: taskList.getTasks()) {

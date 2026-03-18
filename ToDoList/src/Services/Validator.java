@@ -1,9 +1,6 @@
 package Services;
 
-import CustomExceptions.EmptyInputException;
-import CustomExceptions.ListNameLengthExceededException;
-import CustomExceptions.ListNameUnavailableException;
-import CustomExceptions.TaskValidationException;
+import CustomExceptions.*;
 import Models.Category;
 import Models.Priority;
 import Models.Task;
@@ -15,9 +12,12 @@ import java.util.List;
 
 public class Validator {
 
-    public List<Object> validateTaskCreation(String taskText, Category category, Priority priority, LocalDate dueDate) throws TaskValidationException {
-        List<Object> taskData = new ArrayList<>();
-        List<String> errors = new ArrayList<>();
+    //this function here is used to validate the data ented to create a task
+    public List<Object> validateTaskCreation(String taskText, Category category, Priority priority, LocalDate dueDate) throws TaskValidationException
+    {
+        List<Object> taskData = new ArrayList<>(); //this is where the task's data is added if it passes validation
+        List<String> errors = new ArrayList<>(); //this is the list where every discrepancy during inspection is added
+
 
         if (taskText.trim().equalsIgnoreCase("") || taskText.isBlank())
         {
@@ -60,7 +60,7 @@ public class Validator {
             taskData.add(dueDate);
         }
 
-        if (!errors.isEmpty())
+        if (!errors.isEmpty()) //if the errors list is not empty, it means an error has occurred and the exception is thrown detailing everything that went wrong
         {
             throw new TaskValidationException(String.join("\n", errors));
         }
@@ -68,10 +68,16 @@ public class Validator {
         return taskData;
     }
 
-    public List<Object> validateTaskEditing(Task task,String taskText, Category category, Priority priority, LocalDate dueDate) throws TaskValidationException
+    //this function is used to validate the data when a task is about to be edited, it follows the same logic as the function above
+    public List<Object> validateTaskEditing(Task task,String taskText, Category category, Priority priority, LocalDate dueDate) throws EmptyInputException, TaskValidationException
     {
         List<Object> taskData = new ArrayList<>();
         List<String> errors = new ArrayList<>();
+
+        if(task == null)
+        {
+            throw new EmptyInputException("No task object ws provided. Cannot edit.");
+        }
 
         if (taskText.trim().equalsIgnoreCase("") || taskText.isBlank())
         {
@@ -122,6 +128,7 @@ public class Validator {
         return taskData;
     }
 
+    //this function makes sure the data entered is not null
     public String validateNotNull(String input, String message) throws EmptyInputException
     {
         if(input.trim().equals("") || input.isBlank())
@@ -132,6 +139,7 @@ public class Validator {
         return input;
     }
 
+    //This function makes sure that the list's name length does not exceed the character limit
     public String validateListNameLength(String listName) throws ListNameLengthExceededException
     {
         if (listName.length() > 40)
@@ -142,6 +150,7 @@ public class Validator {
         return listName;
     }
 
+    //This function makes sure that the list's name is available. Having two lists with the same name can be problematic
     public String validateListNameAvailability(List<TaskList> lists, String listName) throws ListNameUnavailableException
     {
         if (lists.stream().anyMatch(n -> n.getListName().equals( listName)))

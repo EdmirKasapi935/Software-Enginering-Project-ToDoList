@@ -1,5 +1,6 @@
 package Controllers;
 
+import CustomExceptions.EmptyInputException;
 import CustomExceptions.TaskValidationException;
 import Services.TaskService;
 import Models.Category;
@@ -16,19 +17,19 @@ public class TaskController {
 
     private static final TaskService taskHandler = new TaskService();
 
-    private static final ArrayList<TaskPanelObserver> taskObservers = new ArrayList<>();
+    private static final ArrayList<TaskPanelObserver> taskObservers = new ArrayList<>(); //the observers are stored here
 
-    public void addTaskPanelObserver(TaskPanelObserver observer)
+    public void addTaskPanelObserver(TaskPanelObserver observer) //function to add observers
     {
         taskObservers.add(observer);
     }
 
-    private void notifyTaskPanelObservers(TaskList list)
+    private void notifyTaskPanelObservers(TaskList list) //function to notify the observer
     {
         taskObservers.forEach(n -> n.onListStateChange(list));
     }
 
-    public static void notifyTaskPanelObserversFromBackground(TaskList list)
+    public static void notifyTaskPanelObserversFromBackground(TaskList list) //function to notify the observer from the background
     {
         taskObservers.forEach(n -> n.onListStateChange(list));
     }
@@ -54,7 +55,7 @@ public class TaskController {
         try {
             taskHandler.processEditTask(task, taskName, taskCategory, taskPriority, dueDate);
             JOptionPane.showMessageDialog(null,"Task edited successfully!", "Task Edited", JOptionPane.INFORMATION_MESSAGE);
-        }catch (TaskValidationException e)
+        }catch (EmptyInputException | TaskValidationException e)
         {
             JOptionPane.showMessageDialog(null,e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

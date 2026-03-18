@@ -9,8 +9,10 @@ import java.util.List;
 
 public class StorageService {
 
+    //The name of the storage file
     private static final String FILE_NAME = "src\\Storage\\lists.ser";
 
+    //this function reads the data from the file
     public static List<TaskList> loadTasks()
     {
         List<TaskList> lists = new ArrayList<>();
@@ -27,6 +29,7 @@ public class StorageService {
         return lists;
     }
 
+    //this function saves the data to the file
     public static void saveLists(List<TaskList> lists)
     {
         try(FileOutputStream outputStream = new FileOutputStream(FILE_NAME);

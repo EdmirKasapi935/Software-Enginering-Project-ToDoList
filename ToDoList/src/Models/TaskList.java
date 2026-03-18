@@ -44,9 +44,9 @@ public class TaskList implements Serializable {
         this.tasks.remove(task);
     }
 
-    public List<Task> getSortedList(SortCriterion criterion)
+    public List<Task> getSortedList(SortCriterion criterion) //This function does the sorting for the list
     {
-        List<Task> copyList = new ArrayList<>(tasks);
+        List<Task> copyList = new ArrayList<>(tasks); //in order for the main data not to be permanently altered, a copy is passed instead, the sorting remains view level
 
         if (criterion == SortCriterion.BY_PRIORITY)
         {
