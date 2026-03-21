@@ -54,10 +54,10 @@ public class EditTaskForm extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                Date dateresult = (Date) dueDateSpinner.getValue();
-                LocalDate localdateresult = dateresult.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                Date dateResult = (Date) dueDateSpinner.getValue();
+                LocalDate localDateResult = dateResult.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-                taskController.editTask(currentTask, taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(), (Priority) priorityComboBox.getSelectedItem(), localdateresult);
+                taskController.editTask(currentTask, taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(), (Priority) priorityComboBox.getSelectedItem(), localDateResult);
             }
         });
     }
@@ -80,14 +80,20 @@ public class EditTaskForm extends JFrame {
     private void initializeDueDateSpinner()
     {
         SpinnerDateModel dateModel = new SpinnerDateModel(
-                Date.from(currentTask.getDueDate().atStartOfDay().toInstant(ZoneOffset.UTC)),
-                todayWithoutTime(),
+                Date.from(currentTask.getDueDate().atStartOfDay(ZoneId.systemDefault()).toInstant()),
+                Date.from(currentTask.getDueDate().atStartOfDay(ZoneId.systemDefault()).toInstant()),
                 null,
                 Calendar.DAY_OF_MONTH
         );
 
         dueDateSpinner.setModel(dateModel);
-        dueDateSpinner.setEditor(new JSpinner.DateEditor(dueDateSpinner, "dd/MM/yyyy"));
+
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(dueDateSpinner, "dd/MM/yyyy");
+        dueDateSpinner.setEditor(editor);
+
+        editor.getTextField().setEditable(false);
+        JFormattedTextField textField = editor.getTextField();
+        textField.setFocusLostBehavior(JFormattedTextField.COMMIT_OR_REVERT);
     }
 
     private void fillFields()
@@ -96,14 +102,4 @@ public class EditTaskForm extends JFrame {
         categoryComboBox.setSelectedItem(currentTask.getTaskCategory());
         priorityComboBox.setSelectedItem(currentTask.getTaskPriority());
     }
-
-    private Date todayWithoutTime() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal.getTime();
-    }
-
 }
