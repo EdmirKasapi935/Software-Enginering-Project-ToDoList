@@ -39,7 +39,7 @@ public class EditTaskForm extends JFrame {
         this.setContentPane(this.mainPanel);
         initializeCategoryComboBox();
         initializePriorityComboBox();
-        initializeDueDateSpinner();
+        initializeDueDateSpinnerForEdit();
         fillFields();
 
         cancelButton.addActionListener(new ActionListener() {
@@ -77,11 +77,18 @@ public class EditTaskForm extends JFrame {
         priorityComboBox.addItem(Priority.HIGH);
     }
 
-    private void initializeDueDateSpinner()
+    private void initializeDueDateSpinnerForEdit()
     {
+        Date startDate = todayWithoutTime();
+
+        if(currentTask.getDueDate().isBefore(LocalDate.now()))
+        {
+            startDate = Date.from(currentTask.getDueDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+
         SpinnerDateModel dateModel = new SpinnerDateModel(
                 Date.from(currentTask.getDueDate().atStartOfDay(ZoneId.systemDefault()).toInstant()),
-                Date.from(currentTask.getDueDate().atStartOfDay(ZoneId.systemDefault()).toInstant()),
+                startDate,
                 null,
                 Calendar.DAY_OF_MONTH
         );
@@ -101,5 +108,14 @@ public class EditTaskForm extends JFrame {
         taskTitleField.setText(currentTask.getTaskText());
         categoryComboBox.setSelectedItem(currentTask.getTaskCategory());
         priorityComboBox.setSelectedItem(currentTask.getTaskPriority());
+    }
+
+    private Date todayWithoutTime() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
     }
 }
