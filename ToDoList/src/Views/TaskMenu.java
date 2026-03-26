@@ -19,9 +19,9 @@ import java.util.List;
 
 public class TaskMenu extends JFrame implements ActionListener, ListNameObserver, TaskPanelObserver {
 
-    private final ListController listController = new ListController();
+    private final ListController listController;
 
-    private final TaskController taskController = new TaskController();
+    private final TaskController taskController;
 
     private final MainFrame mainFrame;
     private TaskList currentList = AppContext.getInstance().getCurrentList();
@@ -30,12 +30,14 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
 
     private JComboBox<SortCriterion> sortBox;
 
-    public TaskMenu( MainFrame frame)
+    public TaskMenu(MainFrame frame, ListController listController, TaskController taskController)
     {
+        this.mainFrame = frame;
+        this.listController = listController;
+        this.taskController = taskController;
+
         listController.addNameObserver(this);
         taskController.addTaskPanelObserver(this);
-
-        this.mainFrame = frame;
 
         setLayout(null);
 

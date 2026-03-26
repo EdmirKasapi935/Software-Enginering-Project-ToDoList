@@ -14,9 +14,9 @@ import java.util.Map;
 
 public class ReportForm extends JFrame implements ReportObserver {
 
-    private final ReportController reportController = new ReportController();
-
-    private ReportData taskReport;
+    private final MainFrame mainFrame;
+    private final ReportController reportController;
+    private final ReportData taskReport;
 
     private JPanel formPanel;
     private JLabel pageTitle;
@@ -43,35 +43,47 @@ public class ReportForm extends JFrame implements ReportObserver {
     private JButton exportButton;
     private JPanel mainPanel;
 
-    public ReportForm(MainFrame frame) {
+    public ReportForm(MainFrame frame, ReportController reportController) {
 
-        this.setContentPane(mainPanel);
-
-        reportController.addReportObserver(this);
+        this.mainFrame = frame;
+        this.reportController = reportController;
         this.taskReport = reportController.generateReport(ListRepository.getInstance());
 
-        mainMenuButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.showMainListMenu();
-            }
-        });
+        this.setContentPane(mainPanel);
+        reportController.addReportObserver(this);
 
         showReportValues(this.taskReport);
         exportButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
-                int option = chooser.showSaveDialog(null);
-
-                if (option == JFileChooser.APPROVE_OPTION)
-                {
-                    File selectedFile = chooser.getSelectedFile();
-
-                    reportController.exportReportData(selectedFile, taskReport);
-                }
+                exportButtonClicked();
             }
         });
+
+        mainMenuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainMenuButtonClicked();
+            }
+        });
+    }
+
+    private void exportButtonClicked()
+    {
+        JFileChooser chooser = new JFileChooser();
+        int option = chooser.showSaveDialog(null);
+
+        if (option == JFileChooser.APPROVE_OPTION)
+        {
+            File selectedFile = chooser.getSelectedFile();
+
+            reportController.exportReportData(selectedFile, taskReport);
+        }
+    }
+
+    private void mainMenuButtonClicked()
+    {
+        this.mainFrame.showMainListMenu();
     }
 
     private void showReportValues(ReportData taskReport)

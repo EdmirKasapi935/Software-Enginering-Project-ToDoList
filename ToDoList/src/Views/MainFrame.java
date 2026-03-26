@@ -1,26 +1,36 @@
 package Views;
 
+import Controllers.ListController;
+import Controllers.ReportController;
+import Controllers.TaskController;
 import Data.ListRepository;
-import Models.TaskList;
 import Scheduler.NotificationScheduler;
 import Services.NotificationService;
 import Services.StorageService;
-import Views.AppDimensions;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainFrame extends JFrame {
 
-    ArrayList<TaskList> taskLists = new ArrayList<>();
-    NotificationService notificationService = new NotificationService();
-    NotificationScheduler scheduler = new NotificationScheduler(notificationService);
+    private final NotificationScheduler scheduler;
+
+    private final ListController listController;
+
+    private final TaskController taskController;
+
+    private final ReportController reportController;
 
     public MainFrame()
     {
+
+        NotificationService notificationService = new NotificationService();
+        this.scheduler = new NotificationScheduler(notificationService);
+
+        this.listController = new ListController();
+        this.taskController = new TaskController();
+        this.reportController = new ReportController();
 
         this.setSize(AppDimensions.GUI_SIZE);
         this.setTitle("ToDoList");
@@ -52,27 +62,27 @@ public class MainFrame extends JFrame {
 
     public void showMainListMenu()
     {
-        switchWindow(new MainListMenu(this));
+        switchWindow(new MainListMenu(this, listController));
     }
 
     public void showTaskMenu()
     {
-        switchWindow(new TaskMenu(this));
+        switchWindow(new TaskMenu(this, listController, taskController));
     }
 
     public void showAddTaskForm()
     {
-        switchWindow(new AddTaskForm(this));
-    }
-
-    public void showReportForm()
-    {
-        switchWindow(new ReportForm(this));
+        switchWindow(new AddTaskForm(this, taskController));
     }
 
     public void showEditTaskForm()
     {
-        switchWindow(new EditTaskForm(this));
+        switchWindow(new EditTaskForm(this, taskController));
+    }
+
+    public void showReportForm()
+    {
+        switchWindow(new ReportForm(this, reportController));
     }
 
     private void switchWindow(JFrame frame)

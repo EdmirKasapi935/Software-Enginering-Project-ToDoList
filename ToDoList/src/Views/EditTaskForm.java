@@ -17,9 +17,9 @@ import java.util.Date;
 
 public class EditTaskForm extends JFrame {
 
+    private final MainFrame mainFrame;
+    private final TaskController taskController;
     private final Task currentTask = AppContext.getInstance().getCurrentTask();
-
-    private final TaskController taskController = new TaskController();
 
     private JPanel mainPanel;
     private JLabel taskTitleLabel;
@@ -34,32 +34,44 @@ public class EditTaskForm extends JFrame {
     private JButton submitButton;
     private JButton cancelButton;
 
-    public EditTaskForm(MainFrame frame)
+    public EditTaskForm(MainFrame frame, TaskController taskController)
     {
+        this.mainFrame = frame;
+        this.taskController = taskController;
+
         this.setContentPane(this.mainPanel);
         initializeCategoryComboBox();
         initializePriorityComboBox();
         initializeDueDateSpinnerForEdit();
         fillFields();
 
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AppContext.getInstance().setCurrentTask(null);
-                frame.showTaskMenu();
-            }
-        });
-
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                Date dateResult = (Date) dueDateSpinner.getValue();
-                LocalDate localDateResult = dateResult.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-                taskController.editTask(currentTask, taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(), (Priority) priorityComboBox.getSelectedItem(), localDateResult);
+                editTaskClicked();
             }
         });
+
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               cancelButtonClicked();
+            }
+        });
+    }
+
+    private void editTaskClicked()
+    {
+        Date dateResult = (Date) dueDateSpinner.getValue();
+        LocalDate localDateResult = dateResult.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        taskController.editTask(currentTask, taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(), (Priority) priorityComboBox.getSelectedItem(), localDateResult);
+    }
+
+    private void cancelButtonClicked()
+    {
+        AppContext.getInstance().setCurrentTask(null);
+        mainFrame.showTaskMenu();
     }
 
     private void initializeCategoryComboBox()

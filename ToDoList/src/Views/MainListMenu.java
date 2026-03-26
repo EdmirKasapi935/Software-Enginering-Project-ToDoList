@@ -14,14 +14,15 @@ import java.util.List;
 public class MainListMenu extends JFrame implements ActionListener, ListObserver {
 
     private final MainFrame mainFrame;
-    private final ListController listController = new ListController();
+    private final ListController listController;
     private final List<TaskList> taskLists = ListRepository.getInstance().getAllLists();
 
     private JPanel listPanel, listComponentPanel;
 
-    public MainListMenu(MainFrame mainFrame){
+    public MainListMenu(MainFrame mainFrame, ListController controller){
 
         this.mainFrame = mainFrame;
+        this.listController = controller;
 
         listController.addListObserver(this);
 

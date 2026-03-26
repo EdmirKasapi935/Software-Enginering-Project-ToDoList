@@ -15,7 +15,8 @@ import java.util.Date;
 
 public class AddTaskForm extends JFrame{
 
-    private final TaskController taskController = new TaskController();
+    private final MainFrame mainFrame;
+    private final TaskController taskController;
 
     private JLabel taskTitleLabel;
     private JComboBox<Category> categoryComboBox;
@@ -30,32 +31,43 @@ public class AddTaskForm extends JFrame{
     private JLabel dueDateLabel;
     private JSpinner dueDateSpinner;
 
-    public AddTaskForm(MainFrame frame)
+    public AddTaskForm(MainFrame frame, TaskController taskController)
     {
+        this.mainFrame = frame;
+        this.taskController = taskController;
+
         this.setContentPane(this.mainPanel);
         initializeCategoryComboBox();
         initializePriorityComboBox();
         initializeDueDateSpinner();
 
-
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               submitButtonClicked();
+            }
+        });
 
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.showTaskMenu();
+                cancelButtonClicked();
             }
         });
 
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+    }
 
-                Date dateresult = (Date) dueDateSpinner.getValue();
-                LocalDate localdateresult = dateresult.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    private void submitButtonClicked()
+    {
+        Date dateResult = (Date) dueDateSpinner.getValue();
+        LocalDate localDateResult = dateResult.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-                taskController.createTask(AppContext.getInstance().getCurrentList(), taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(),(Priority) priorityComboBox.getSelectedItem(), localdateresult );
-            }
-        });
+        taskController.createTask(AppContext.getInstance().getCurrentList(), taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(),(Priority) priorityComboBox.getSelectedItem(), localDateResult );
+    }
+
+    private void cancelButtonClicked()
+    {
+        mainFrame.showTaskMenu();
     }
 
     private void initializeCategoryComboBox()
@@ -101,7 +113,4 @@ public class AddTaskForm extends JFrame{
         return cal.getTime();
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
 }
