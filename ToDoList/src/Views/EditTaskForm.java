@@ -18,7 +18,6 @@ import java.util.Date;
 public class EditTaskForm extends JFrame {
 
     private final MainFrame mainFrame;
-    private final TaskController taskController;
     private final Task currentTask = AppContext.getInstance().getCurrentTask();
 
     private JPanel mainPanel;
@@ -34,10 +33,9 @@ public class EditTaskForm extends JFrame {
     private JButton submitButton;
     private JButton cancelButton;
 
-    public EditTaskForm(MainFrame frame, TaskController taskController)
+    public EditTaskForm(MainFrame frame)
     {
         this.mainFrame = frame;
-        this.taskController = taskController;
 
         this.setContentPane(this.mainPanel);
         initializeCategoryComboBox();
@@ -65,7 +63,7 @@ public class EditTaskForm extends JFrame {
         Date dateResult = (Date) dueDateSpinner.getValue();
         LocalDate localDateResult = dateResult.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        taskController.editTask(currentTask, taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(), (Priority) priorityComboBox.getSelectedItem(), localDateResult);
+        mainFrame.getTaskController().editTask(currentTask, taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(), (Priority) priorityComboBox.getSelectedItem(), localDateResult);
     }
 
     private void cancelButtonClicked()

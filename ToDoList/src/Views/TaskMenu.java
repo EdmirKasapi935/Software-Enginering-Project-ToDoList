@@ -19,10 +19,6 @@ import java.util.List;
 
 public class TaskMenu extends JFrame implements ActionListener, ListNameObserver, TaskPanelObserver {
 
-    private final ListController listController;
-
-    private final TaskController taskController;
-
     private final MainFrame mainFrame;
     private TaskList currentList = AppContext.getInstance().getCurrentList();
     private JLabel pageTitle;
@@ -30,14 +26,12 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
 
     private JComboBox<SortCriterion> sortBox;
 
-    public TaskMenu(MainFrame frame, ListController listController, TaskController taskController)
+    public TaskMenu(MainFrame frame)
     {
         this.mainFrame = frame;
-        this.listController = listController;
-        this.taskController = taskController;
 
-        listController.addNameObserver(this);
-        taskController.addTaskPanelObserver(this);
+        mainFrame.getListController().addNameObserver(this);
+        mainFrame.getTaskController().addTaskPanelObserver(this);
 
         setLayout(null);
 
@@ -111,7 +105,7 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
 
     public void removeTask(Task task)
     {
-        taskController.deleteTask(currentList, task);
+        mainFrame.getTaskController().deleteTask(currentList, task);
     }
 
     public void goToTaskEditForm(Task task)
@@ -131,7 +125,7 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
             String newListName = JOptionPane.showInputDialog("Enter the new name for this list.");
 
             if (newListName != null && !newListName.isEmpty()) {
-                listController.changeListName(ListRepository.getInstance().getAllLists(), currentList, newListName);
+                mainFrame.getListController().changeListName(ListRepository.getInstance().getAllLists(), currentList, newListName);
             }
         } else if (command.equalsIgnoreCase("Add Task")) {
             mainFrame.showAddTaskForm();
@@ -142,7 +136,7 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
             int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + currentList.getListName() + "?", "Delete Task List", JOptionPane.YES_NO_OPTION);
 
             if (choice == JOptionPane.YES_OPTION) {
-                listController.deleteList(ListRepository.getInstance().getAllLists(), currentList);
+                mainFrame.getListController().deleteList(ListRepository.getInstance().getAllLists(), currentList);
                 mainFrame.showMainListMenu();
             }
 
@@ -155,7 +149,7 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
             {
                 File selectedFile = chooser.getSelectedFile();
 
-                listController.exportTaskList(selectedFile, currentList);
+                mainFrame.getListController().exportTaskList(selectedFile, currentList);
             }
 
         }

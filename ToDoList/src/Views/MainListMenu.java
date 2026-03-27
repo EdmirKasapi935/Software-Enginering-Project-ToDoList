@@ -14,17 +14,14 @@ import java.util.List;
 public class MainListMenu extends JFrame implements ActionListener, ListObserver {
 
     private final MainFrame mainFrame;
-    private final ListController listController;
     private final List<TaskList> taskLists = ListRepository.getInstance().getAllLists();
 
     private JPanel listPanel, listComponentPanel;
 
-    public MainListMenu(MainFrame mainFrame, ListController controller){
+    public MainListMenu(MainFrame mainFrame){
 
         this.mainFrame = mainFrame;
-        this.listController = controller;
-
-        listController.addListObserver(this);
+        mainFrame.getListController().addListObserver(this);
 
         setLayout(null);
 
@@ -87,7 +84,7 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
             String listName = JOptionPane.showInputDialog("Enter the name of the new List");
 
             if (listName != null && !listName.isEmpty()) {
-                listController.createList(taskLists, listName);
+                mainFrame.getListController().createList(taskLists, listName);
             }
         } else if (command.equalsIgnoreCase("View Report")) {
             mainFrame.showReportForm();
@@ -101,7 +98,7 @@ public class MainListMenu extends JFrame implements ActionListener, ListObserver
         int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + list.getListName() + "?", "Delete Task List", JOptionPane.YES_NO_OPTION);
 
         if (choice == JOptionPane.YES_OPTION) {
-            listController.deleteList(this.taskLists, list);
+            mainFrame.getListController().deleteList(this.taskLists, list);
         }
     }
 

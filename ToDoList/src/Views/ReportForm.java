@@ -15,7 +15,6 @@ import java.util.Map;
 public class ReportForm extends JFrame implements ReportObserver {
 
     private final MainFrame mainFrame;
-    private final ReportController reportController;
     private final ReportData taskReport;
 
     private JPanel formPanel;
@@ -43,14 +42,13 @@ public class ReportForm extends JFrame implements ReportObserver {
     private JButton exportButton;
     private JPanel mainPanel;
 
-    public ReportForm(MainFrame frame, ReportController reportController) {
+    public ReportForm(MainFrame frame) {
 
         this.mainFrame = frame;
-        this.reportController = reportController;
-        this.taskReport = reportController.generateReport(ListRepository.getInstance());
+        this.taskReport = mainFrame.getReportController().generateReport(ListRepository.getInstance());
 
         this.setContentPane(mainPanel);
-        reportController.addReportObserver(this);
+        mainFrame.getReportController().addReportObserver(this);
 
         showReportValues(this.taskReport);
         exportButton.addActionListener(new ActionListener() {
@@ -77,7 +75,7 @@ public class ReportForm extends JFrame implements ReportObserver {
         {
             File selectedFile = chooser.getSelectedFile();
 
-            reportController.exportReportData(selectedFile, taskReport);
+            this.mainFrame.getReportController().exportReportData(selectedFile, taskReport);
         }
     }
 

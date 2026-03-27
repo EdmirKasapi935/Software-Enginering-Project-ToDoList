@@ -62,27 +62,27 @@ public class MainFrame extends JFrame {
 
     public void showMainListMenu()
     {
-        switchWindow(new MainListMenu(this, listController));
+        switchWindow(new MainListMenu(this));
     }
 
     public void showTaskMenu()
     {
-        switchWindow(new TaskMenu(this, listController, taskController));
+        switchWindow(new TaskMenu(this));
     }
 
     public void showAddTaskForm()
     {
-        switchWindow(new AddTaskForm(this, taskController));
+        switchWindow(new AddTaskForm(this));
     }
 
     public void showEditTaskForm()
     {
-        switchWindow(new EditTaskForm(this, taskController));
+        switchWindow(new EditTaskForm(this));
     }
 
     public void showReportForm()
     {
-        switchWindow(new ReportForm(this, reportController));
+        switchWindow(new ReportForm(this));
     }
 
     private void switchWindow(JFrame frame)
@@ -90,6 +90,18 @@ public class MainFrame extends JFrame {
         this.setContentPane(frame.getContentPane());
         repaint();
         revalidate();
+    }
+
+    public ListController getListController() {
+        return listController;
+    }
+
+    public TaskController getTaskController() {
+        return taskController;
+    }
+
+    public ReportController getReportController() {
+        return reportController;
     }
 
     private void onExit() {
