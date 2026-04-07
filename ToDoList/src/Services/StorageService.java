@@ -10,7 +10,19 @@ import java.util.List;
 public class StorageService {
 
     //The name of the storage file
-    private static final String FILE_NAME = "src\\Storage\\lists.ser";
+    private static final String FILE_NAME = getStoragePath();
+
+    private static String getStoragePath() {
+        File dir = new File(System.getProperty("user.dir"));
+        File candidate = new File(dir, "src" + File.separator + "Storage" + File.separator + "lists.ser");
+        if (candidate.exists()) return candidate.getAbsolutePath();
+
+        candidate = new File(dir, "ToDoList" + File.separator + "src" + File.separator + "Storage" + File.separator + "lists.ser");
+        if (candidate.exists()) return candidate.getAbsolutePath();
+
+        return dir.getAbsolutePath() + File.separator + "ToDoList" + File.separator
+                + "src" + File.separator + "Storage" + File.separator + "lists.ser";
+    }
 
     //this function reads the data from the file
     public static List<TaskList> loadTasks()
