@@ -8,19 +8,17 @@ import Models.Priority;
 import Models.Task;
 import Models.TaskList;
 import Observers.TaskPanelObserver;
+import Views.ThemedDialog;
 
-import javax.swing.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class TaskController {
 
     private static final TaskService taskHandler = new TaskService();
+    private static final ArrayList<TaskPanelObserver> taskObservers = new ArrayList<>();
 
-    private static final ArrayList<TaskPanelObserver> taskObservers = new ArrayList<>(); //the observers are stored here
-
-    public void addTaskPanelObserver(TaskPanelObserver observer) //function to add observers
-    {
+    public void addTaskPanelObserver(TaskPanelObserver observer) {
         taskObservers.add(observer);
     }
 
@@ -38,10 +36,10 @@ public class TaskController {
     {
         try {
             taskHandler.processCreateTask(list, taskName, taskCategory, taskPriority, dueDate);
-            JOptionPane.showMessageDialog(null,"Task added successfully!", "Task Added", JOptionPane.INFORMATION_MESSAGE);
-        }catch (TaskValidationException e)
-        {
-            JOptionPane.showMessageDialog(null,e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ThemedDialog.message("Task added successfully!", "Task Added");
+            notifyTaskPanelObservers(list);
+        } catch (TaskValidationException e) {
+            ThemedDialog.message(e.getMessage(), "Error");
         }
     }
 
@@ -54,10 +52,9 @@ public class TaskController {
     {
         try {
             taskHandler.processEditTask(task, taskName, taskCategory, taskPriority, dueDate);
-            JOptionPane.showMessageDialog(null,"Task edited successfully!", "Task Edited", JOptionPane.INFORMATION_MESSAGE);
-        }catch (EmptyInputException | TaskValidationException e)
-        {
-            JOptionPane.showMessageDialog(null,e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ThemedDialog.message("Task edited successfully!", "Task Edited");
+        } catch (EmptyInputException | TaskValidationException e) {
+            ThemedDialog.message(e.getMessage(), "Error");
         }
     }
 

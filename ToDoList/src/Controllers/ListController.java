@@ -9,9 +9,8 @@ import Services.ListService;
 import Models.TaskList;
 import Observers.ListNameObserver;
 import Observers.ListObserver;
+import Views.ThemedDialog;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,10 +53,9 @@ public class ListController {
     {
         try {
             notifyListObservers(listHandler.processCreateList(lists, listName));
-        }catch (EmptyInputException | ListNameLengthExceededException | ListNameUnavailableException e){
-            JOptionPane.showMessageDialog(new Button("OK"), e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (EmptyInputException | ListNameLengthExceededException | ListNameUnavailableException e) {
+            ThemedDialog.message(e.getMessage(), "Error");
         }
-
     }
 
     public void deleteList(List<TaskList> lists, TaskList taskList)
@@ -69,22 +67,18 @@ public class ListController {
     {
         try {
             notifyNameObservers(listHandler.processNameChange(taskLists, taskList, newName));
-        }catch (EmptyInputException | ListNameLengthExceededException | ListNameUnavailableException e)
-        {
-            JOptionPane.showMessageDialog(new Button("OK"), e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (EmptyInputException | ListNameLengthExceededException | ListNameUnavailableException e) {
+            ThemedDialog.message(e.getMessage(), "Error");
         }
-
     }
 
     public void exportTaskList(File file, TaskList list)
     {
         try {
             exportHandler.processExportTaskList(file, list);
-            JOptionPane.showMessageDialog(null, "Your list was exported successfully!", "Task List Exported", JOptionPane.INFORMATION_MESSAGE);
-        }catch (IOException | EmptyListException | EmptyInputException e)
-        {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ThemedDialog.message("Your list was exported successfully!", "List Exported");
+        } catch (IOException | EmptyListException | EmptyInputException e) {
+            ThemedDialog.message(e.getMessage(), "Error");
         }
     }
-
 }
