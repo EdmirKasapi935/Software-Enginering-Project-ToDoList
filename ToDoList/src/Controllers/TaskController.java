@@ -22,40 +22,42 @@ public class TaskController {
         taskObservers.add(observer);
     }
 
-    private void notifyTaskPanelObservers(TaskList list) //function to notify the observer
-    {
+    private void notifyTaskPanelObservers(TaskList list) {
         taskObservers.forEach(n -> n.onListStateChange(list));
     }
 
-    public static void notifyTaskPanelObserversFromBackground(TaskList list) //function to notify the observer from the background
-    {
+    public static void notifyTaskPanelObserversFromBackground(TaskList list) {
         taskObservers.forEach(n -> n.onListStateChange(list));
     }
 
-    public void createTask(TaskList list, String taskName, Category taskCategory, Priority taskPriority, LocalDate dueDate)
-    {
+    /** Returns true on success, false on validation error. */
+    public boolean createTask(TaskList list, String taskName, Category taskCategory,
+                              Priority taskPriority, LocalDate dueDate) {
         try {
             taskHandler.processCreateTask(list, taskName, taskCategory, taskPriority, dueDate);
             ThemedDialog.message("Task added successfully!", "Task Added");
             notifyTaskPanelObservers(list);
+            return true;
         } catch (TaskValidationException e) {
             ThemedDialog.message(e.getMessage(), "Error");
+            return false;
         }
     }
 
-    public void deleteTask(TaskList list, Task task)
-    {
+    public void deleteTask(TaskList list, Task task) {
         notifyTaskPanelObservers(taskHandler.processDeleteTask(list, task));
     }
 
-    public void editTask(Task task, String taskName, Category taskCategory, Priority taskPriority, LocalDate dueDate)
-    {
+    //Returns true on success, false on validation error.
+    public boolean editTask(Task task, String taskName, Category taskCategory,
+                            Priority taskPriority, LocalDate dueDate) {
         try {
             taskHandler.processEditTask(task, taskName, taskCategory, taskPriority, dueDate);
             ThemedDialog.message("Task edited successfully!", "Task Edited");
+            return true;
         } catch (EmptyInputException | TaskValidationException e) {
             ThemedDialog.message(e.getMessage(), "Error");
+            return false;
         }
     }
-
 }

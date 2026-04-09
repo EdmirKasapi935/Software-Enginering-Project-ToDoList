@@ -19,23 +19,21 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
     private final MainFrame mainFrame;
     private TaskList currentList = AppContext.getInstance().getCurrentList();
     private JLabel pageTitle;
-    private JPanel taskPanel, taskComponentPanel;
+    private JPanel taskComponentPanel;
     private JComboBox<SortCriterion> sortBox;
 
     public TaskMenu(MainFrame frame) {
         this.mainFrame = frame;
         mainFrame.getListController().addNameObserver(this);
         mainFrame.getTaskController().addTaskPanelObserver(this);
-        setLayout(null);
+        setLayout(new BorderLayout());
         addGuiComponents();
         populateTaskPanel(currentList, (SortCriterion) sortBox.getSelectedItem());
     }
 
     private void addGuiComponents() {
-        int W = AppDimensions.GUI_SIZE.width;
-        int H = AppDimensions.GUI_SIZE.height;
-
-        JPanel headerPanel = new JPanel(null) {
+        // ── Header ────────────────────────────────────────────────────────────
+        JPanel headerPanel = new JPanel(new BorderLayout()) {
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.setColor(AppDimensions.CARD_BORDER);
@@ -43,49 +41,58 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
             }
         };
         headerPanel.setBackground(AppDimensions.BG_TASK_SCREEN);
-        headerPanel.setBounds(0, 0, W, 64);
+        headerPanel.setPreferredSize(new Dimension(0, 60));
 
-        pageTitle = new JLabel(buildTitleHtml(currentList.getListName()));
+        pageTitle = new JLabel(buildTitleHtml(currentList.getListName()), SwingConstants.CENTER);
         pageTitle.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-        pageTitle.setBounds(0, 16, W, 32);
-        pageTitle.setHorizontalAlignment(SwingConstants.CENTER);
-        headerPanel.add(pageTitle);
+        headerPanel.add(pageTitle, BorderLayout.CENTER);
 
-        int barH  = 100;
-        int barY  = H - barH - 28;
+        // ── Scroll area ───────────────────────────────────────────────────────
+        JPanel taskPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        taskPanel.setBackground(AppDimensions.BG_TASK_SCREEN);
 
-        JPanel buttonPanel = new JPanel(null) {
+        taskComponentPanel = new JPanel();
+        taskComponentPanel.setLayout(new BoxLayout(taskComponentPanel, BoxLayout.Y_AXIS));
+        taskComponentPanel.setBackground(AppDimensions.BG_TASK_SCREEN);
+        taskComponentPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 8, 0));
+        taskPanel.add(taskComponentPanel);
+
+        JScrollPane scrollPane = new JScrollPane(taskPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getViewport().setBackground(AppDimensions.BG_TASK_SCREEN);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(14);
+
+        // ── Button bar: two rows ──────────────────────────────────────────────
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 0, 0)) {
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.setColor(AppDimensions.CARD_BORDER);
                 g.drawLine(0, 0, getWidth(), 0);
             }
         };
-        buttonPanel.setBounds(0, barY, W, barH);
         buttonPanel.setBackground(AppDimensions.BG_BUTTON_BAR);
+        buttonPanel.setPreferredSize(new Dimension(0, 96));
 
         JPanel row1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 8));
-        row1.setOpaque(false);
-        row1.setBounds(0, 0, W, 46);
+        row1.setBackground(AppDimensions.BG_BUTTON_BAR);
 
-        JButton mainMenuButton     = AppDimensions.makeButton("Back",         AppDimensions.BTN_NEUTRAL,   AppDimensions.BTN_NEUTRAL_FG);
-        JButton addTaskButton      = AppDimensions.makeButton("Add Task",      AppDimensions.BTN_PRIMARY,   AppDimensions.BTN_PRIMARY_FG);
-        JButton editListNameButton = AppDimensions.makeButton("Edit Name",     AppDimensions.BTN_SECONDARY, AppDimensions.BTN_SECONDARY_FG);
+        JButton backBtn       = AppDimensions.makeButton("Back",        AppDimensions.BTN_NEUTRAL,   AppDimensions.BTN_NEUTRAL_FG);
+        JButton addTaskBtn    = AppDimensions.makeButton("Add Task",     AppDimensions.BTN_PRIMARY,   AppDimensions.BTN_PRIMARY_FG);
+        JButton editNameBtn   = AppDimensions.makeButton("Edit Name",    AppDimensions.BTN_SECONDARY, AppDimensions.BTN_SECONDARY_FG);
 
-        mainMenuButton.setActionCommand("Back");
-        addTaskButton.setActionCommand("Add Task");
-        editListNameButton.setActionCommand("Edit Name");
+        backBtn.setActionCommand("Back");
+        addTaskBtn.setActionCommand("Add Task");
+        editNameBtn.setActionCommand("Edit Name");
+        backBtn.addActionListener(this);
+        addTaskBtn.addActionListener(this);
+        editNameBtn.addActionListener(this);
 
-        mainMenuButton.addActionListener(this);
-        addTaskButton.addActionListener(this);
-        editListNameButton.addActionListener(this);
-        row1.add(mainMenuButton);
-        row1.add(addTaskButton);
-        row1.add(editListNameButton);
+        row1.add(backBtn); row1.add(addTaskBtn); row1.add(editNameBtn);
 
         JPanel row2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 4));
-        row2.setOpaque(false);
-        row2.setBounds(0, 46, W, 50);
+        row2.setBackground(AppDimensions.BG_BUTTON_BAR);
 
         sortBox = new JComboBox<>();
         sortBox.setFont(AppDimensions.FONT_SMALL);
@@ -95,55 +102,31 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
         sortBox.addItem(SortCriterion.BY_CATEGORY);
         sortBox.setPreferredSize(new Dimension(110, 30));
 
-        JButton sortButton   = AppDimensions.makeButton("Sort",        AppDimensions.BTN_NEUTRAL,  AppDimensions.BTN_NEUTRAL_FG);
-        JButton deleteButton = AppDimensions.makeButton("Delete List",  AppDimensions.BTN_DANGER,   AppDimensions.BTN_DANGER_FG);
-        JButton exportButton = AppDimensions.makeButton("Export",       AppDimensions.BTN_SECONDARY,AppDimensions.BTN_SECONDARY_FG);
+        JButton sortBtn   = AppDimensions.makeButton("Sort",        AppDimensions.BTN_NEUTRAL,   AppDimensions.BTN_NEUTRAL_FG);
+        JButton deleteBtn = AppDimensions.makeButton("Delete List",  AppDimensions.BTN_DANGER,    AppDimensions.BTN_DANGER_FG);
+        JButton exportBtn = AppDimensions.makeButton("Export",       AppDimensions.BTN_SECONDARY, AppDimensions.BTN_SECONDARY_FG);
 
-        sortButton.setActionCommand("Sort");
-        deleteButton.setActionCommand("Delete List");
-        exportButton.setActionCommand("Export");
+        sortBtn.setActionCommand("Sort");
+        deleteBtn.setActionCommand("Delete List");
+        exportBtn.setActionCommand("Export");
+        sortBtn.addActionListener(this);
+        deleteBtn.addActionListener(this);
+        exportBtn.addActionListener(this);
 
-        sortButton.addActionListener(this);
-        deleteButton.addActionListener(this);
-        exportButton.addActionListener(this);
-
-        row2.add(sortBox);
-        row2.add(sortButton);
-        row2.add(deleteButton);
-        row2.add(exportButton);
+        row2.add(sortBox); row2.add(sortBtn); row2.add(deleteBtn); row2.add(exportBtn);
 
         buttonPanel.add(row1);
         buttonPanel.add(row2);
 
-        taskPanel = new JPanel();
-        taskPanel.setBackground(AppDimensions.BG_TASK_SCREEN);
-
-        taskComponentPanel = new JPanel();
-        taskComponentPanel.setLayout(new BoxLayout(taskComponentPanel, BoxLayout.Y_AXIS));
-        taskComponentPanel.setBackground(AppDimensions.BG_TASK_SCREEN);
-        taskComponentPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 8, 0));
-        taskPanel.add(taskComponentPanel);
-
-        int scrollY = 64;
-        int scrollH = barY - scrollY - 4;
-
-        JScrollPane scrollPane = new JScrollPane(taskPanel);
-        scrollPane.setBounds(8, scrollY, W - 16, scrollH);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.getViewport().setBackground(AppDimensions.BG_TASK_SCREEN);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(14);
-
         getContentPane().setBackground(AppDimensions.BG_TASK_SCREEN);
-        getContentPane().add(headerPanel);
-        getContentPane().add(scrollPane);
-        getContentPane().add(buttonPanel);
+        getContentPane().add(headerPanel, BorderLayout.NORTH);
+        getContentPane().add(scrollPane,  BorderLayout.CENTER);
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
     }
 
     private String buildTitleHtml(String name) {
-        return "<html><span style='color:#8782B2;font-family:Segoe UI;font-size:13px;'>Viewing&nbsp;</span>"
-                + "<span style='color:#18123E;font-family:Segoe UI;font-size:15px;font-weight:bold;'>" + name + "</span></html>";
+        return "<html><span style='color:#8A7D68;font-family:Segoe UI;font-size:12px;'>Viewing&nbsp;</span>"
+                + "<span style='color:#2A2018;font-family:Segoe UI;font-size:15px;font-weight:bold;'>" + name + "</span></html>";
     }
 
     public void removeTask(Task task) { mainFrame.getTaskController().deleteTask(currentList, task); }
@@ -156,7 +139,7 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
     @Override
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
-        if ("Back".equalsIgnoreCase(cmd) || "Main Menu".equalsIgnoreCase(cmd)) {
+        if ("Back".equalsIgnoreCase(cmd)) {
             AppContext.getInstance().setCurrentList(null);
             mainFrame.showMainListMenu();
         } else if ("Edit Name".equalsIgnoreCase(cmd)) {
@@ -169,15 +152,14 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
             populateTaskPanel(currentList, (SortCriterion) sortBox.getSelectedItem());
         } else if ("Delete List".equalsIgnoreCase(cmd)) {
             int c = MainListMenu.showThemedConfirm(
-                    "Are you sure you want to delete \"" + currentList.getListName() + "\"?",
-                    "Delete List");
+                    "Are you sure you want to delete \"" + currentList.getListName() + "\"?", "Delete List");
             if (c == JOptionPane.YES_OPTION) {
                 mainFrame.getListController().deleteList(ListRepository.getInstance().getAllLists(), currentList);
                 mainFrame.showMainListMenu();
             }
         } else if ("Export".equalsIgnoreCase(cmd)) {
-            javax.swing.JFileChooser chooser = new javax.swing.JFileChooser();
-            if (chooser.showSaveDialog(null) == javax.swing.JFileChooser.APPROVE_OPTION)
+            JFileChooser chooser = new JFileChooser();
+            if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION)
                 mainFrame.getListController().exportTaskList(chooser.getSelectedFile(), currentList);
         }
     }
@@ -193,12 +175,8 @@ public class TaskMenu extends JFrame implements ActionListener, ListNameObserver
     }
 
     @Override
-    public void onListNameChange(TaskList list) {
-        pageTitle.setText(buildTitleHtml(list.getListName()));
-    }
+    public void onListNameChange(TaskList list) { pageTitle.setText(buildTitleHtml(list.getListName())); }
 
     @Override
-    public void onListStateChange(TaskList list) {
-        populateTaskPanel(list, (SortCriterion) sortBox.getSelectedItem());
-    }
+    public void onListStateChange(TaskList list) { populateTaskPanel(list, (SortCriterion) sortBox.getSelectedItem()); }
 }

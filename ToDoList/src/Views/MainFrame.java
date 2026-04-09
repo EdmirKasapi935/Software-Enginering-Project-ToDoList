@@ -12,6 +12,8 @@ import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -25,20 +27,34 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         applyLookAndFeel();
         ThemedDialog.applyToOptionPane();
+
         NotificationService notificationService = new NotificationService();
         this.scheduler      = new NotificationScheduler(notificationService);
         this.listController   = new ListController();
         this.taskController   = new TaskController();
         this.reportController = new ReportController();
+
         this.setSize(AppDimensions.GUI_SIZE);
+        this.setMinimumSize(new Dimension(420, 560));   // never too small
         this.setTitle("ToDoList");
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setResizable(true);   // allow resizing
+
         NotificationService.initialize();
         scheduler.start();
+
         showMainListMenu();
         this.setVisible(true);
+
+        // Reflow the current view whenever the window is resized
+        addComponentListener(new ComponentAdapter() {
+            @Override public void componentResized(ComponentEvent e) {
+                getContentPane().revalidate();
+                getContentPane().repaint();
+            }
+        });
+
         addWindowListener(new WindowAdapter() {
             @Override public void windowClosing(WindowEvent e) { onExit(); }
         });
@@ -58,49 +74,38 @@ public class MainFrame extends JFrame {
             UIManager.put("defaultFont",                   new FontUIResource(AppDimensions.FONT_BODY));
             UIManager.put("Component.focusColor",          AppDimensions.ACCENT);
             UIManager.put("Component.focusedBorderColor",  AppDimensions.ACCENT);
-
             UIManager.put("Button.arc",                    999);
             UIManager.put("Button.background",             AppDimensions.BTN_PRIMARY);
             UIManager.put("Button.foreground",             AppDimensions.BTN_PRIMARY_FG);
             UIManager.put("Button.hoverBackground",        AppDimensions.BTN_PRIMARY.darker());
             UIManager.put("Button.innerFocusWidth",        0);
-
             UIManager.put("TextComponent.arc",             8);
             UIManager.put("TextField.background",          AppDimensions.BG_CARD);
             UIManager.put("TextField.foreground",          AppDimensions.TEXT_PRIMARY);
             UIManager.put("TextField.caretForeground",     AppDimensions.ACCENT);
-
             UIManager.put("ComboBox.arc",                  8);
             UIManager.put("ComboBox.background",           AppDimensions.BG_CARD);
             UIManager.put("ComboBox.selectionBackground",  new Color(0xD8EADC));
             UIManager.put("ComboBox.selectionForeground",  AppDimensions.TEXT_PRIMARY);
-
             UIManager.put("Spinner.arc",                   8);
             UIManager.put("Spinner.background",            AppDimensions.BG_CARD);
-
             UIManager.put("ScrollBar.width",               8);
             UIManager.put("ScrollBar.thumbArc",            999);
             UIManager.put("ScrollBar.thumb",               new ColorUIResource(new Color(0xC0B090)));
             UIManager.put("ScrollBar.hoverThumbColor",     new ColorUIResource(new Color(0xA09070)));
             UIManager.put("ScrollBar.track",               new ColorUIResource(AppDimensions.BG_MAIN));
             UIManager.put("ScrollBar.showButtons",         false);
-
             UIManager.put("CheckBox.arc",                  4);
             UIManager.put("CheckBox.icon.checkedBackground",  AppDimensions.ACCENT);
             UIManager.put("CheckBox.icon.checkmarkColor",     AppDimensions.BTN_PRIMARY_FG);
             UIManager.put("CheckBox.icon.borderColor",        new Color(0xC0B090));
             UIManager.put("CheckBox.icon.hoverBorderColor",   AppDimensions.ACCENT);
-
-
             UIManager.put("Panel.background",              new ColorUIResource(AppDimensions.BG_MAIN));
             UIManager.put("OptionPane.background",         new ColorUIResource(AppDimensions.BG_CARD));
             UIManager.put("OptionPane.messageForeground",  new ColorUIResource(AppDimensions.TEXT_PRIMARY));
-
             UIManager.put("ToolTip.background",            new ColorUIResource(new Color(0xF0EBE0)));
             UIManager.put("ToolTip.foreground",            new ColorUIResource(AppDimensions.TEXT_PRIMARY));
-
             UIManager.put("Separator.foreground",          new ColorUIResource(AppDimensions.CARD_BORDER));
-
             return true;
         } catch (Exception e) { return false; }
     }
@@ -141,9 +146,9 @@ public class MainFrame extends JFrame {
         repaint(); revalidate();
     }
 
-    public Controllers.ListController   getListController()   { return listController; }
-    public Controllers.TaskController   getTaskController()   { return taskController; }
-    public Controllers.ReportController getReportController() { return reportController; }
+    public ListController   getListController()   { return listController; }
+    public TaskController   getTaskController()   { return taskController; }
+    public ReportController getReportController() { return reportController; }
 
     private void onExit() {
         int choice = ThemedDialog.confirm("Are you sure you want to exit?", "Exit");

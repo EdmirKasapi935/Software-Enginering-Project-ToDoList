@@ -46,6 +46,7 @@ public class EditTaskForm extends JFrame {
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(AppDimensions.BG_MAIN);
 
+        // ── Header ────────────────────────────────────────────────────────────
         JPanel headerPanel = new JPanel(null) {
             @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -69,6 +70,7 @@ public class EditTaskForm extends JFrame {
         header.setBounds(0, 16, AppDimensions.GUI_SIZE.width, 40);
         headerPanel.add(header);
 
+        // ── Form card ─────────────────────────────────────────────────────────
         JPanel card = new JPanel(new GridBagLayout()) {
             @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -122,6 +124,7 @@ public class EditTaskForm extends JFrame {
         cardWrapper.setBorder(BorderFactory.createEmptyBorder(18, 24, 8, 24));
         cardWrapper.add(card, BorderLayout.CENTER);
 
+        // ── Button bar ────────────────────────────────────────────────────────
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 14)) {
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -162,11 +165,14 @@ public class EditTaskForm extends JFrame {
     private void editTaskClicked() {
         Date d = (Date) dueDateSpinner.getValue();
         LocalDate ld = d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        mainFrame.getTaskController().editTask(currentTask, taskTitleField.getText(),
+        boolean success = mainFrame.getTaskController().editTask(currentTask, taskTitleField.getText(),
                 (Category) categoryComboBox.getSelectedItem(),
                 (Priority) priorityComboBox.getSelectedItem(), ld);
-        AppContext.getInstance().setCurrentTask(null);
-        mainFrame.showTaskMenu();
+        if (success) {
+            AppContext.getInstance().setCurrentTask(null);
+            mainFrame.showTaskMenu();
+        }
+        // on error: stay open so the user can fix the problem
     }
 
     private void cancelButtonClicked() {

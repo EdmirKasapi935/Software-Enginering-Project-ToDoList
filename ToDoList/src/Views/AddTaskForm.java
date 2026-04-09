@@ -43,6 +43,7 @@ public class AddTaskForm extends JFrame {
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(AppDimensions.BG_MAIN);
 
+        // ── Header with leaf accent ───────────────────────────────────────────
         JPanel headerPanel = new JPanel(null) {
             @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -67,6 +68,7 @@ public class AddTaskForm extends JFrame {
         header.setBounds(0, 16, AppDimensions.GUI_SIZE.width, 40);
         headerPanel.add(header);
 
+        // ── Form card ─────────────────────────────────────────────────────────
         JPanel card = new JPanel(new GridBagLayout()) {
             @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -114,12 +116,14 @@ public class AddTaskForm extends JFrame {
 
         gc.gridy = 11; gc.weighty = 1; card.add(Box.createVerticalGlue(), gc); gc.weighty = 0;
 
+        // Wrap card in a padded scroll-safe container
         JPanel cardWrapper = new JPanel(new BorderLayout());
         cardWrapper.setOpaque(false);
         cardWrapper.setBackground(AppDimensions.BG_MAIN);
         cardWrapper.setBorder(BorderFactory.createEmptyBorder(18, 24, 8, 24));
         cardWrapper.add(card, BorderLayout.CENTER);
 
+        // ── Button bar ────────────────────────────────────────────────────────
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 14)) {
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -160,10 +164,12 @@ public class AddTaskForm extends JFrame {
     private void submitButtonClicked() {
         Date d = (Date) dueDateSpinner.getValue();
         LocalDate ld = d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        mainFrame.getTaskController().createTask(AppContext.getInstance().getCurrentList(),
+        boolean success = mainFrame.getTaskController().createTask(
+                AppContext.getInstance().getCurrentList(),
                 taskTitleField.getText(), (Category) categoryComboBox.getSelectedItem(),
                 (Priority) priorityComboBox.getSelectedItem(), ld);
-        mainFrame.showTaskMenu();
+        if (success) mainFrame.showTaskMenu();
+        // on error: stay open so the user can fix the problem
     }
 
     private void cancelButtonClicked() { mainFrame.showTaskMenu(); }

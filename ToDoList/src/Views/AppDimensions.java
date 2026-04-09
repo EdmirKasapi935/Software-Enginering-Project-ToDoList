@@ -6,39 +6,45 @@ import java.awt.geom.RoundRectangle2D;
 
 public class AppDimensions {
 
-    public static final Dimension GUI_SIZE           = new Dimension(540, 800);
-    public static final Dimension BANNER_SIZE        = new Dimension(GUI_SIZE.width, 60);
-    public static final Dimension TASKPANEL_SIZE     = new Dimension(GUI_SIZE.width - 30, GUI_SIZE.height - 175);
-    public static final Dimension ADDTASKBUTTON_SIZE = new Dimension(GUI_SIZE.width, 50);
+    // ── Dynamic sizing based on screen ───────────────────────────────────────
+    // Window starts at 60% of screen height, min 600px, max 900px
+    // Width is always 70% of height for a consistent portrait feel
+    private static final Dimension SCREEN    = Toolkit.getDefaultToolkit().getScreenSize();
+    private static final int BASE_H = Math.max(600, Math.min(900, (int)(SCREEN.height * 0.85)));
+    private static final int BASE_W = Math.max(460, Math.min(600, (int)(BASE_H * 0.68)));
+
+    public static final Dimension GUI_SIZE           = new Dimension(BASE_W, BASE_H);
+    public static final Dimension BANNER_SIZE        = new Dimension(BASE_W, 60);
+    public static final Dimension TASKPANEL_SIZE     = new Dimension(BASE_W - 30, BASE_H - 175);
+    public static final Dimension ADDTASKBUTTON_SIZE = new Dimension(BASE_W, 50);
     public static final Dimension TASKFIELD_SIZE     = new Dimension((int)(TASKPANEL_SIZE.width * 0.80), 50);
     public static final Dimension CHECKBOX_SIZE      = new Dimension((int)(TASKFIELD_SIZE.width * 0.05), 50);
     public static final Dimension DELETE_BUTTON_SIZE = new Dimension((int)(TASKFIELD_SIZE.width * 0.12), 50);
 
+    // ── Palette — "Terra & Cream" ─────────────────────────────────────────────
+    public static final Color BG_MAIN        = new Color(0xF5F0E8);
+    public static final Color BG_TASK_SCREEN = new Color(0xEFEADF);
+    public static final Color BG_BUTTON_BAR  = new Color(0xFAF7F2);
+    public static final Color BG_CARD        = new Color(0xFFFDF8);
 
-    public static final Color BG_MAIN        = new Color(0xF5F0E8);  // warm cream
-    public static final Color BG_TASK_SCREEN = new Color(0xEFEADF);  // slightly toasted cream
-    public static final Color BG_BUTTON_BAR  = new Color(0xFAF7F2);  // lightest cream
-    public static final Color BG_CARD        = new Color(0xFFFDF8);  // near-white warm
+    public static final Color ACCENT         = new Color(0x3D6B4F);
 
-    public static final Color ACCENT         = new Color(0x3D6B4F);  // deep forest green
-
-    //Buttons
-    public static final Color BTN_PRIMARY    = new Color(0x3D6B4F);  // forest green
+    public static final Color BTN_PRIMARY    = new Color(0x3D6B4F);
     public static final Color BTN_PRIMARY_FG = new Color(0xFFFDF8);
-    public static final Color BTN_SECONDARY  = new Color(0x6B8F5E);  // sage green
+    public static final Color BTN_SECONDARY  = new Color(0x6B8F5E);
     public static final Color BTN_SECONDARY_FG = new Color(0xFFFDF8);
-    public static final Color BTN_DANGER     = new Color(0x8B3A3A);  // soft maroon
+    public static final Color BTN_DANGER     = new Color(0x8B3A3A);
     public static final Color BTN_DANGER_FG  = new Color(0xFFFDF8);
-    public static final Color BTN_NEUTRAL    = new Color(0xE8E0D0);  // warm sand
-    public static final Color BTN_NEUTRAL_FG = new Color(0x3D3020);  // dark brown text
+    public static final Color BTN_NEUTRAL    = new Color(0xE8E0D0);
+    public static final Color BTN_NEUTRAL_FG = new Color(0x3D3020);
 
-    public static final Color PRIORITY_HIGH   = new Color(0x8B3A3A);  // maroon
-    public static final Color PRIORITY_MEDIUM = new Color(0xB07840);  // warm amber-brown
-    public static final Color PRIORITY_LOW    = new Color(0x4A7C59);  // forest green
+    public static final Color PRIORITY_HIGH   = new Color(0x8B3A3A);
+    public static final Color PRIORITY_MEDIUM = new Color(0xB07840);
+    public static final Color PRIORITY_LOW    = new Color(0x4A7C59);
 
-    public static final Color ROW_HIGH   = new Color(0xFDF5F0);  // very soft rose-cream
-    public static final Color ROW_MEDIUM = new Color(0xFDF8EE);  // warm honey tint
-    public static final Color ROW_LOW    = new Color(0xF2F8F2);  // soft green-white
+    public static final Color ROW_HIGH   = new Color(0xFDF5F0);
+    public static final Color ROW_MEDIUM = new Color(0xFDF8EE);
+    public static final Color ROW_LOW    = new Color(0xF2F8F2);
 
     public static final Color STATUS_DUE_TODAY = new Color(0xFDF6E3);
     public static final Color STATUS_OVERDUE   = new Color(0xFDF0EC);
@@ -46,12 +52,13 @@ public class AppDimensions {
 
     public static final Color BORDER_DUE_TODAY = new Color(0xB07840);
     public static final Color BORDER_OVERDUE   = new Color(0x8B3A3A);
-    public static final Color CARD_BORDER      = new Color(0xDDD5C0);  // warm tan border
+    public static final Color CARD_BORDER      = new Color(0xDDD5C0);
 
-    public static final Color TEXT_PRIMARY = new Color(0x2A2018);  // warm near-black
-    public static final Color TEXT_MUTED   = new Color(0x8A7D68);  // warm grey-brown
+    public static final Color TEXT_PRIMARY = new Color(0x2A2018);
+    public static final Color TEXT_MUTED   = new Color(0x8A7D68);
     public static final Color TEXT_ACCENT  = new Color(0x3D6B4F);
 
+    // ── Fonts ─────────────────────────────────────────────────────────────────
     public static final Font FONT_TITLE = new Font("Segoe UI", Font.BOLD,  22);
     public static final Font FONT_BTN   = new Font("Segoe UI", Font.BOLD,  12);
     public static final Font FONT_LIST  = new Font("Segoe UI", Font.PLAIN, 14);
@@ -59,6 +66,7 @@ public class AppDimensions {
     public static final Font FONT_BODY  = new Font("Segoe UI", Font.PLAIN, 13);
     public static final Font FONT_SMALL = new Font("Segoe UI", Font.PLAIN, 11);
 
+    // ── Button factory ────────────────────────────────────────────────────────
     public static JButton makeButton(String text, Color bg, Color fg) {
         JButton btn = new JButton(text) {
             @Override
@@ -68,7 +76,6 @@ public class AppDimensions {
                 boolean pressed  = getModel().isPressed();
                 boolean rollover = getModel().isRollover();
                 if (!pressed) {
-                    // warm shadow
                     g2.setColor(new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), 45));
                     g2.fill(new RoundRectangle2D.Float(1, 3, getWidth()-2, getHeight()-1, 10, 10));
                 }
