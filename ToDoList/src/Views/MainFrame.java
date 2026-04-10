@@ -16,6 +16,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 public class MainFrame extends JFrame {
 
@@ -37,6 +38,8 @@ public class MainFrame extends JFrame {
         this.setSize(AppDimensions.GUI_SIZE);
         this.setMinimumSize(new Dimension(420, 560));   // never too small
         this.setTitle("ToDoList");
+        Image icon = new ImageIcon(getIconPath()).getImage().getScaledInstance(256, 256, Image.SCALE_SMOOTH);;
+        this.setIconImage(icon);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);   // allow resizing
@@ -149,6 +152,18 @@ public class MainFrame extends JFrame {
     public ListController   getListController()   { return listController; }
     public TaskController   getTaskController()   { return taskController; }
     public ReportController getReportController() { return reportController; }
+
+    private static String getIconPath() {
+        File dir = new File(System.getProperty("user.dir"));
+        File candidate = new File(dir, "src" + File.separator + "Icons" + File.separator + "Todo_Mascot.png");
+        if (candidate.exists()) return candidate.getAbsolutePath();
+
+        candidate = new File(dir, "ToDoList" + File.separator + "src" + File.separator + "Icons" + File.separator + "Todo_Mascot.png");
+        if (candidate.exists()) return candidate.getAbsolutePath();
+
+        return dir.getAbsolutePath() + File.separator + "ToDoList" + File.separator
+                + "src" + File.separator + "Icons" + File.separator + "Todo_Mascot.png";
+    }
 
     private void onExit() {
         int choice = ThemedDialog.confirm("Are you sure you want to exit?", "Exit");
